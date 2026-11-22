@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "intervalMinutes": 5,
+  "region": "world",
+  "customCities": "",
+  "niches": "кофейни, автосервисы, стоматологии, барбершопы, дизайн-студии",
+  "qualityFilter": "weak_only",
+  "autoEnrich": true,
+  "visitedCities": [
+    "Лиссабон",
+    "Стамбул",
+    "Белград"
+  ],
+  "isRunning": true,
+  "nextRunAt": "2026-11-22T12:35:48.608Z",
+  "lastRunAt": "2026-11-22T12:30:48.608Z",
+  "lastCity": "Белград",
+  "lastNiche": "автосервисы",
+  "lastAddedCount": 0,
+  "lastScannedCount": 5
+}

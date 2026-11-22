@@ -1,0 +1,1049 @@
+[
+  {
+    "id": "biz_8494cbf0b8",
+    "name": "Стоматология Алматы «Dental-Center»",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Алматы Казахстан",
+    "origin": "maps",
+    "discoveredBy": "manual",
+    "region": "cis",
+    "countryCode": "KZ",
+    "countryName": "Казахстан",
+    "placeId": "ChIJe5hm_bZvgzgRsg-TvnzE3GQ",
+    "address": "ул. Каныша Сатпаева 133/6, Алматы 500004, Казахстан",
+    "lat": 43.2336361,
+    "lng": 76.8743437,
+    "rating": 5,
+    "userRatingCount": 67,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+7 747 093 8986",
+    "websiteUrl": "https://dental-center.kz/",
+    "googleMapsUrl": "https://maps.google.com/?cid=7267899938721435570&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Dental-Center — это стоматологическая клиника полного цикла в Алматы, работающая с 1995 года. Клиника специализируется на имплантации, ортодонтии, лечении под микроскопом и эстетическом протезировании, предлагая пациентам современный сервис с фотопротоколом и прозрачным планированием лечения.",
+    "openingHours": [
+      "понедельник: 09:00—20:00",
+      "вторник: 09:00—20:00",
+      "среда: 09:00—20:00",
+      "четверг: 09:00—20:00",
+      "пятница: 09:00—20:00",
+      "суббота: 09:00—20:00",
+      "воскресенье: 09:00—20:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Стоматология Алматы «Dental-Center» на Google Картах",
+        "url": "https://maps.google.com/?cid=7267899938721435570&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://dental-center.kz/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:57:57.537Z",
+    "audit": {
+      "verdict": "modern_ok",
+      "verdictLabel": "Современный, проработанный сайт",
+      "websiteScore": 9,
+      "designScore": 9,
+      "issues": [
+        "Отсутствие прямой интеграции с Telegram-ботом для записи (основной акцент сделан только на WhatsApp).",
+        "Нет полноценного личного кабинета пациента для отслеживания истории лечения, планов и снимков в режиме онлайн.",
+        "Недостаточная визуализация 'цифровой экосистемы' клиники — можно усилить интерактивность сайта для демонстрации инноваций."
+      ],
+      "pitchSuggestions": [
+        "Разработка полноценного личного кабинета пациента: интеграция рентген-снимков, планов лечения и истории визитов.",
+        "Внедрение Telegram-бота для автоматического подтверждения записей, напоминаний о приеме и сбора обратной связи.",
+        "Интеграция системы онлайн-бронирования слотов к конкретным врачам с синхронизацией в CRM клиники."
+      ],
+      "salesPitch": "Добрый день! У вас отличный сайт — видно, что вкладываетесь в контент и экспертность. Чтобы кратно увеличить конверсию и снизить нагрузку на администраторов, предлагаю доработать сайт до полноценного веб-сервиса с личным кабинетом пациента и Telegram-ботом для автоматизации записи. Это не только повысит лояльность, но и позволит пациентам получать планы лечения и снимки в пару кликов. Готов обсудить, как мы можем усилить вашу цифровую инфраструктуру.",
+      "scannedAt": "2026-11-22T12:58:06.767Z"
+    }
+  },
+  {
+    "id": "biz_ce7a3bc638",
+    "name": "Eurodent",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Алматы Казахстан",
+    "origin": "maps",
+    "discoveredBy": "manual",
+    "region": "cis",
+    "countryCode": "KZ",
+    "countryName": "Казахстан",
+    "placeId": "ChIJtd8iqr1ugzgRbM2atWF-AMg",
+    "address": "улица Желтоксан 83, Алматы 050000, Казахстан",
+    "lat": 43.257963,
+    "lng": 76.93875899999999,
+    "rating": 4.6,
+    "userRatingCount": 301,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+7 707 746 6404",
+    "websiteUrl": "https://eurodent.kz/",
+    "googleMapsUrl": "https://maps.google.com/?cid=14411657765709335916&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [
+      "https://www.instagram.com/eurodent.kz/"
+    ],
+    "description": "Eurodent — это крупная сеть стоматологических клиник в Алматы с 5 филиалами, предлагающая широкий спектр услуг от имплантации и протезирования до детской стоматологии и ЛОР-помощи. Компания активно развивает направление цифровой стоматологии и имеет внушительный штат специалистов.",
+    "openingHours": [
+      "понедельник: 10:00—20:00",
+      "вторник: 10:00—20:00",
+      "среда: 10:00—20:00",
+      "четверг: 10:00—20:00",
+      "пятница: 10:00—20:00",
+      "суббота: 10:00—20:00",
+      "воскресенье: 10:00—20:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Eurodent на Google Картах",
+        "url": "https://maps.google.com/?cid=14411657765709335916&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://eurodent.kz/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:57:57.537Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший и визуально слабый сайт",
+      "websiteScore": 4,
+      "designScore": 3,
+      "issues": [
+        "Устаревший UI и визуальная перегруженность: интерфейс выглядит как разработки начала 2010-х, что снижает уровень доверия к современной клинике.",
+        "Отсутствие интерактивности: нет калькулятора стоимости услуг, личного кабинета пациента или интеграции с современными системами онлайн-записи (вместо этого — громоздкие формы).",
+        "Слабая конверсионная воронка: сайт выполняет роль каталога, но не «продает» услугу через качественные кейсы (фото до/после) и персонализированные предложения."
+      ],
+      "pitchSuggestions": [
+        "Внедрение интерактивного калькулятора цен на имплантацию и ортодонтию — это повысит вовлеченность и конверсию в заявку.",
+        "Создание личного кабинета пациента, где можно просматривать план лечения, историю посещений и результаты КТ/рентгена.",
+        "Разработка современного адаптивного лендинга под каждое топовое направление (имплантация/виниры) с акцентом на экспертность врачей и качественные фото до/после."
+      ],
+      "salesPitch": "Добрый день! Изучил ваш сайт Eurodent: у вас отличная репутация и широкая сеть, но текущий дизайн сайта выглядит сильно устаревшим на фоне конкурентов, что снижает доверие новых клиентов. Мы можем разработать для вас современное веб-решение с онлайн-калькулятором стоимости и личным кабинетом, что сделает запись к врачу в разы удобнее для пациентов. Готов показать, как новый UX/UI поможет вам увеличить поток онлайн-записей — интересно обсудить?",
+      "scannedAt": "2026-11-22T12:58:16.326Z"
+    }
+  },
+  {
+    "id": "biz_2f540c5824",
+    "name": "Стоматология \"Demokrat\" в Коктем",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Алматы Казахстан",
+    "origin": "maps",
+    "discoveredBy": "manual",
+    "region": "cis",
+    "countryCode": "KZ",
+    "countryName": "Казахстан",
+    "placeId": "ChIJJT6K5ihvgzgRoOWGrEIngS8",
+    "address": "Central Esentai Residence, жилой комплекс Коктем 3-й микрорайон, 24, корпус D, Алматы 050040, Казахстан",
+    "lat": 43.2347189,
+    "lng": 76.91994629999999,
+    "rating": 4.9,
+    "userRatingCount": 228,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+7 707 283 7031",
+    "websiteUrl": "http://demokrat-almaty.kz/",
+    "googleMapsUrl": "https://maps.google.com/?cid=3423060359094134176&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [
+      "https://www.instagram.com/demokrat_almaty/"
+    ],
+    "description": "Стоматологическая клиника «Demokrat» в Алматы, часть федеральной сети, предлагающая полный спектр стоматологических услуг: от имплантации и ортодонтии до терапии и детской стоматологии. Клиника оснащена современным оборудованием, включая цифровые сканеры и микроскопы, и ориентирована на премиальное лечение с рассрочкой платежей.",
+    "openingHours": [
+      "понедельник: 09:00—19:00",
+      "вторник: 09:00—19:00",
+      "среда: 09:00—19:00",
+      "четверг: 09:00—19:00",
+      "пятница: 09:00—19:00",
+      "суббота: 09:00—19:00",
+      "воскресенье: 09:00—19:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Стоматология \"Demokrat\" в Коктем на Google Картах",
+        "url": "https://maps.google.com/?cid=3423060359094134176&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "http://demokrat-almaty.kz/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:57:57.537Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший сайт и дизайн",
+      "websiteScore": 4,
+      "designScore": 3,
+      "issues": [
+        "Устаревший визуальный дизайн и типографика, которые выглядят как шаблон начала 2010-х годов и не внушают доверия премиум-сегменту.",
+        "Отсутствие современной конверсионной воронки: сайт перегружен текстовыми блоками и формами, нет нативной онлайн-записи (только сбор контактов для звонка менеджера).",
+        "Технические ошибки и низкое качество UX: сайт содержит юридические реквизиты РФ (ИНН, ОГРН, закон 152-ФЗ) на казахстанском сайте, что критически снижает доверие и выглядит непрофессионально."
+      ],
+      "pitchSuggestions": [
+        "Внедрение интерактивного виджета онлайн-записи, интегрированного напрямую в CRM клиники, чтобы пациенты выбирали время самостоятельно без звонка.",
+        "Создание раздела 'Цифровая стоматология' с наглядными кейсами 'До/После' и 3D-визуализацией процессов лечения для повышения экспертности.",
+        "Разработка калькулятора стоимости лечения (плана имплантации или брекетов), который помогает прогревать клиента и собирать более 'тёплые' заявки.",
+        "Адаптация контента под рынок Казахстана (удаление российских реквизитов) и внедрение современного UI-дизайна, соответствующего премиальному статусу сети."
+      ],
+      "salesPitch": "Добрый день! Изучил ваш сайт Demokrat и вижу огромный потенциал для роста: сейчас он выглядит как шаблон десятилетней давности, а наличие российских юридических данных на казахстанском ресурсе отпугивает клиентов. Мы специализируемся на разработке стоматологических хабов, которые не просто 'висят в сети', а записывают пациентов в календарь без участия администраторов. Готов показать, как современный сайт увеличит вашу конверсию минимум в 2 раза — когда вам будет удобно обсудить детали?",
+      "scannedAt": "2026-11-22T12:58:25.316Z"
+    }
+  },
+  {
+    "id": "biz_579fa9d666",
+    "name": "Miracle Design Studio Pte Ltd",
+    "category": "Генеральный подрядчик",
+    "query": "дизайн-студии Сингапур",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Сингапур",
+    "placeId": "ChIJq6GMMdAX2jERW35XTUF0cnE",
+    "address": "09-23 Oxley Bizhub 2, 62 Ubi Rd 1, Сингапур 408734",
+    "lat": 1.3322686,
+    "lng": 103.892106,
+    "rating": 4.9,
+    "userRatingCount": 95,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+65 8349 9670",
+    "websiteUrl": "https://www.mdstudio.sg/",
+    "googleMapsUrl": "https://maps.google.com/?cid=8174724097450147419&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Miracle Design Studio — сингапурская студия дизайна интерьеров и ремонта, работающая с 2012 года. Компания предоставляет комплексные услуги: от разработки дизайн-проектов и подбора концепций до реализации ремонтных работ.",
+    "openingHours": [
+      "понедельник: 10:00—19:00",
+      "вторник: 10:00—19:00",
+      "среда: 10:00—19:00",
+      "четверг: 10:00—19:00",
+      "пятница: 10:00—19:00",
+      "суббота: 10:00—15:00",
+      "воскресенье: Закрыто"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Miracle Design Studio Pte Ltd на Google Картах",
+        "url": "https://maps.google.com/?cid=8174724097450147419&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://www.mdstudio.sg/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:55:13.949Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший сайт и дизайн",
+      "websiteScore": 4,
+      "designScore": 3,
+      "issues": [
+        "Устаревший визуальный стиль и типографика, которые не транслируют премиальность услуг дизайна интерьера.",
+        "Отсутствие интерактивных элементов конверсии: нет калькулятора стоимости или квиза для быстрого просчета проекта.",
+        "Слабая мобильная адаптация и отсутствие интеграции с современными мессенджерами для мгновенной связи (только стандартные формы).",
+        "Структура сайта выглядит как шаблон 5-7 летней давности, что снижает доверие у клиентов, ищущих современный и дорогой дизайн."
+      ],
+      "pitchSuggestions": [
+        "Внедрение интерактивного калькулятора стоимости дизайна/ремонта, чтобы клиент сразу видел примерный бюджет.",
+        "Разработка галереи портфолио в формате 'До/После' с глубокой детализацией проектов для повышения экспертности.",
+        "Интеграция Telegram-бота или виджета WhatsApp для мгновенной записи на замер или консультацию.",
+        "Личный кабинет клиента, где можно отслеживать этапы проектирования и ремонта в реальном времени — это мощное конкурентное преимущество."
+      ],
+      "salesPitch": "Приветствую! Изучил ваш сайт Miracle Design Studio — у вас отличные кейсы, но текущий дизайн сайта не отражает тот уровень эстетики, который вы создаете для своих клиентов. Я могу помочь вам обновить сайт до современного уровня, добавив онлайн-калькулятор и интерактивное портфолио, что позволит конвертировать посетителей в заявки гораздо эффективнее. Давайте созвонимся на 10 минут, я покажу пару идей, как выделить вашу студию на фоне конкурентов в Сингапуре?",
+      "scannedAt": "2026-11-22T12:55:22.899Z"
+    }
+  },
+  {
+    "id": "biz_05d8cac39f",
+    "name": "Artdecor Design Studio Pte Ltd",
+    "category": "Генеральный подрядчик",
+    "query": "дизайн-студии Сингапур",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Сингапур",
+    "placeId": "ChIJSfbEihwY2jERaZG23Sa5ABQ",
+    "address": "2 Defu South Street 1, #05-03 JTC Industrial city, Singapore 533755",
+    "lat": 1.3450182,
+    "lng": 103.89779639999999,
+    "rating": 5,
+    "userRatingCount": 87,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+65 6222 1702",
+    "websiteUrl": "https://www.artdecordesign.net/",
+    "googleMapsUrl": "https://maps.google.com/?cid=1441355457338184041&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "ArtDecor Design Studio — опытная сингапурская студия дизайна интерьеров с собственным производством мебели (столярный цех), работающая с 1970 года. Компания предоставляет комплексные решения: от проектирования и ремонта до изготовления мебели и послеремонтного обслуживания.",
+    "openingHours": [
+      "понедельник: 09:00—18:00",
+      "вторник: 09:00—18:00",
+      "среда: 09:00—18:00",
+      "четверг: 09:00—18:00",
+      "пятница: 09:00—18:00",
+      "суббота: 09:00—18:00",
+      "воскресенье: Закрыто"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Artdecor Design Studio Pte Ltd на Google Картах",
+        "url": "https://maps.google.com/?cid=1441355457338184041&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://www.artdecordesign.net/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:55:13.949Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший и визуально перегруженный сайт",
+      "websiteScore": 4,
+      "designScore": 4,
+      "issues": [
+        "Перегруженность контентом и дублирование текста: сайт страдает от избыточного использования SEO-фразы 'Art Deco design by Artdecor Design Studio...', что выглядит как технический спам.",
+        "Устаревшая визуальная иерархия и типографика: дизайн выглядит неактуально, блоки текста и навигации скомпонованы неудобно для современного мобильного пользователя.",
+        "Отсутствие интерактивности: несмотря на наличие формы, нет современных инструментов вовлечения, таких как калькулятор стоимости в реальном времени или удобный интерактивный каталог портфолио."
+      ],
+      "pitchSuggestions": [
+        "Внедрение современного интерактивного калькулятора ремонта, который поможет клиенту сразу рассчитать примерный бюджет и повысит конверсию заявки.",
+        "Реализация высококлассного портфолио с фильтрами по типам недвижимости и функционалом «до/после» для демонстрации экспертности.",
+        "Создание Telegram-бота для автоматизации приема заявок и быстрой консультации (интеграция в мессенджеры вместо простого email)."
+      ],
+      "salesPitch": "Добрый день! Изучил ваш сайт: у вас мощная история и отличные услуги, но текущий дизайн с техническим дублированием текста мешает пользователям воспринимать ваш профессионализм. Предлагаю сделать редизайн, который выделит ваши сильные стороны и добавит интерактивный калькулятор ремонта. Это поможет увеличить количество качественных лидов и повысить доверие клиентов за счет современного имиджа.",
+      "scannedAt": "2026-11-22T12:55:31.882Z"
+    },
+    "isFavorite": false
+  },
+  {
+    "id": "biz_00e4cd943b",
+    "name": "Loft.Nine Design Studio",
+    "category": "Генеральный подрядчик",
+    "query": "дизайн-студии Сингапур",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Сингапур",
+    "placeId": "ChIJswJ0gL8Z2jERBiTuMxkLV-0",
+    "address": "806 N Bridge Rd, Сингапур 198774",
+    "lat": 1.3038090999999998,
+    "lng": 103.86046859999999,
+    "rating": 5,
+    "userRatingCount": 59,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+65 6928 5946",
+    "websiteUrl": "https://www.loft9designstudio.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=17102150312836080646&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [
+      "https://www.instagram.com/",
+      "https://www.tiktok.com/"
+    ],
+    "description": "Loft.Nine Design Studio — дизайн-студия и генеральный подрядчик в Сингапуре, специализирующаяся на интерьерах для жилых (HDB, квартиры) и коммерческих помещений. Компания предоставляет комплексные услуги по ремонту и проектированию пространств.",
+    "sourceLinks": [
+      {
+        "title": "Loft.Nine Design Studio на Google Картах",
+        "url": "https://maps.google.com/?cid=17102150312836080646&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://www.loft9designstudio.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:55:13.949Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший сайт и дизайн",
+      "websiteScore": 3,
+      "designScore": 3,
+      "issues": [
+        "Сайт выглядит морально устаревшим: слабая верстка, низкое качество визуальных элементов и отсутствие современной структуры.",
+        "Отсутствие интерактивности и конверсионных механик: сайт работает как статичная визитка, нет калькулятора стоимости или удобной формы записи.",
+        "Плохая адаптивность и пользовательский опыт (UX): навигация и подача контента не соответствуют стандартам премиальных дизайн-студий."
+      ],
+      "pitchSuggestions": [
+        "Внедрение интерактивного калькулятора стоимости ремонта для моментального сбора лидов.",
+        "Создание современного портфолио с функцией «до/после» и фильтрацией по типам проектов (HDB, Condo, Commercial).",
+        "Интеграция CRM-системы через Telegram-бота для мгновенной обработки заявок и автоматизации записи на консультацию."
+      ],
+      "salesPitch": "Привет! Зашел на ваш сайт и увидел крутые кейсы, но текущий дизайн сильно проигрывает уровню ваших работ. Сейчас потенциальные клиенты уходят к конкурентам, так как на сайте нет удобной записи и калькулятора стоимости. Я помогу переупаковать ваш бренд в современный веб-интерфейс, который будет продавать ваши услуги за вас — давайте обсудим?",
+      "scannedAt": "2026-11-22T12:55:52.473Z"
+    }
+  },
+  {
+    "id": "biz_0a3b6c19bb",
+    "name": "Diamond Dental Antalya | Diş Hekimi - Diş Polikliniği | Implant, Veneer, Crowns Dentist",
+    "category": "Стоматолог",
+    "query": "стоматологии Анталья",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Анталья",
+    "placeId": "ChIJXePE9K-RwxQRDpOYeORLtuE",
+    "address": "Molla Yusuf, Uncalı Cd. No: 54 D, 07800 Konyaaltı/Antalya, Турция",
+    "lat": 36.8896881,
+    "lng": 30.6253998,
+    "rating": 4.9,
+    "userRatingCount": 1112,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 543 388 85 78",
+    "websiteUrl": "https://diamonddentalantalya.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=16264270548943016718&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [
+      "https://www.trustpilot.com/review/diamonddentalantalya.com"
+    ],
+    "description": "Diamond Dental Antalya — современная стоматологическая клиника в Турции, специализирующаяся на медицинском туризме для пациентов из Европы, США и стран СНГ. Клиника предлагает комплексные услуги: от имплантации и установки виниров до полного преображения улыбки (Smile Makeover) с организацией VIP-трансферов и проживания.",
+    "openingHours": [
+      "понедельник: 09:00—19:00",
+      "вторник: 09:00—19:00",
+      "среда: 09:00—19:00",
+      "четверг: 09:00—19:00",
+      "пятница: 09:00—19:00",
+      "суббота: 09:00—19:00",
+      "воскресенье: 09:00—17:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Diamond Dental Antalya | Diş Hekimi - Diş Polikliniği | Implant, Veneer, Crowns Dentist на Google Картах",
+        "url": "https://maps.google.com/?cid=16264270548943016718&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://diamonddentalantalya.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:45:48.947Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший дизайн и структура",
+      "websiteScore": 5,
+      "designScore": 4,
+      "issues": [
+        "Перегруженность контентом: сайт забит ключевыми словами для SEO, что портит визуал и затрудняет восприятие для реального пользователя.",
+        "Устаревшая вёрстка: визуальный стиль выглядит как шаблон начала 2020-х, не соответствующий уровню клиники, которая позиционирует себя как премиальную.",
+        "Плохая UX-организация: формы заявки громоздкие и неоптимизированы под конверсию, пользователю сложно быстро найти фокусное действие.",
+        "Отсутствие интерактивности: нет современных инструментов вовлечения (квизы, калькулятор стоимости лечения, интерактивная 3D-визуализация)."
+      ],
+      "pitchSuggestions": [
+        "Внедрение «Калькулятора стоимости улыбки» (квиз), который сегментирует клиентов и дает им примерный план лечения до звонка менеджера.",
+        "Редизайн в стиле минималистичного премиум-бренда: акцент на крупные фото «До/После» с качественной типографикой, повышающей доверие к результату.",
+        "Автоматизация через Telegram-бота: интеграция CRM с ботом для мгновенного уведомления менеджеров о новых заявках и автоматического прогрева пациентов.",
+        "Интерактивная карта клиники и видео-туры в формате Reels на главной для повышения доверия иностранных пациентов."
+      ],
+      "salesPitch": "Добрый день! Посмотрел ваш сайт Diamond Dental. У вас отличные показатели (4.9 на Google), но текущий сайт сильно проигрывает по дизайну и удобству — он перегружен текстом и выглядит как «старое SEO-решение», из-за чего вы теряете часть платежеспособных клиентов, которые ценят визуальный комфорт. Мы можем сделать для вас современный премиум-сайт с калькулятором стоимости и интеграцией в Telegram, что увеличит конверсию в запись минимум на 20-30%. Давайте обсудим, как сделать ваш цифровой имидж таким же качественным, как ваши услуги?",
+      "scannedAt": "2026-11-22T12:46:15.836Z"
+    }
+  },
+  {
+    "id": "biz_afd14a3bef",
+    "name": "Turuncu Ağız Ve Diş Sağlığı Poliklinigi (Özdilek) - Стоматологическая клиника - Zahnarzt Klinik -",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Анталья",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Анталья",
+    "placeId": "ChIJ21a7QMWPwxQRbsnZyVbDsyU",
+    "address": "Fabrikalar, 3002. Sk. No:34, 07090 Kepez/Antalya, Турция",
+    "lat": 36.9096259,
+    "lng": 30.678998999999997,
+    "rating": 4.9,
+    "userRatingCount": 565,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 506 096 01 00",
+    "websiteUrl": "http://www.turuncudental.com.tr/",
+    "googleMapsUrl": "https://maps.google.com/?cid=2716729777755638126&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [
+      "https://www.instagram.com/turuncudental/"
+    ],
+    "description": "Turuncu Ağız Ve Diş Sağlığı Polikliniği — современная стоматологическая клиника в Анталье (район Кепез), предоставляющая широкий спектр стоматологических услуг. Клиника ориентирована как на местных жителей, так и на пациентов, нуждающихся в качественном лечении.",
+    "openingHours": [
+      "понедельник: 09:00—23:00",
+      "вторник: 09:00—23:00",
+      "среда: 09:00—23:00",
+      "четверг: 09:00—23:00",
+      "пятница: 09:00—23:00",
+      "суббота: 09:00—17:00",
+      "воскресенье: 10:00—19:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Turuncu Ağız Ve Diş Sağlığı Poliklinigi (Özdilek) - Стоматологическая клиника - Zahnarzt Klinik - на Google Картах",
+        "url": "https://maps.google.com/?cid=2716729777755638126&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "http://www.turuncudental.com.tr/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:45:48.947Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший сайт и дизайн",
+      "websiteScore": 4,
+      "designScore": 3,
+      "issues": [
+        "Устаревший визуальный стиль и типографика, которые не вызывают доверия у современных пациентов.",
+        "Отсутствие адаптивности под мобильные устройства: сайт неудобно просматривать со смартфонов, что критично для сферы услуг.",
+        "Слабая конверсионная воронка: на сайте нет удобной онлайн-записи, калькулятора или интеграции с мессенджерами для мгновенной связи.",
+        "Технические проблемы (медленная загрузка, отсутствие SSL-сертификата) негативно влияют на SEO-позиции и безопасность."
+      ],
+      "pitchSuggestions": [
+        "Внедрение современного адаптивного дизайна, который подчеркнет премиальность и чистоту клиники.",
+        "Интеграция виджета онлайн-записи и Telegram-бота для автоматического подтверждения приемов.",
+        "Раздел «До/После» с качественными фото для повышения доверия и демонстрации компетенций врачей.",
+        "Калькулятор стоимости услуг для формирования прозрачного ценообразования и сбора лидов (Lead Magnet)."
+      ],
+      "salesPitch": "Здравствуйте! Проанализировал ваш сайт и заметил, что он не адаптирован под мобильные устройства и не позволяет пациентам записаться онлайн в пару кликов. Сейчас многие потенциальные клиенты уходят к конкурентам просто потому, что с вашего сайта неудобно взаимодействовать. Давайте я покажу, как современный сайт с онлайн-записью и интеграцией в Telegram поможет вам повысить конверсию и освободить время администраторов.",
+      "scannedAt": "2026-11-22T12:46:24.484Z"
+    }
+  },
+  {
+    "id": "biz_6ed2f70e7e",
+    "name": "Dental İmplants Turkey İstanbul Clinic | Best Dental Clinic in Turkey | Best Dentist İstanbul | Turkey Teeth",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Стамбул",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Стамбул",
+    "placeId": "ChIJqUNrZP-3yhQRBBBqpcIXBb4",
+    "address": "Gümüşsuyu, Mete Cd. No: 23A D:34437, 34437 Beyoğlu/İstanbul, Турция",
+    "lat": 41.0378797,
+    "lng": 28.987965899999995,
+    "rating": 5,
+    "userRatingCount": 1446,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 540 133 00 00",
+    "websiteUrl": "https://turkeydentalimplants.net/",
+    "googleMapsUrl": "https://maps.google.com/?cid=13692376366856146948&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Стоматологическая клиника в Стамбуле, специализирующаяся на медицинском туризме (имплантация, виниры, Hollywood Smile) для иностранных пациентов. Предлагают комплексные пакеты услуг, включающие трансфер и проживание.",
+    "openingHours": [
+      "понедельник: 24 часа в сутки",
+      "вторник: 24 часа в сутки",
+      "среда: 24 часа в сутки",
+      "четверг: 24 часа в сутки",
+      "пятница: 24 часа в сутки",
+      "суббота: 24 часа в сутки",
+      "воскресенье: 24 часа в сутки"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Dental İmplants Turkey İstanbul Clinic | Best Dental Clinic in Turkey | Best Dentist İstanbul | Turkey Teeth на Google Картах",
+        "url": "https://maps.google.com/?cid=13692376366856146948&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://turkeydentalimplants.net/",
+        "kind": "web"
+      }
+    ],
+    "enriched": true,
+    "createdAt": "2026-11-22T12:25:20.229Z",
+    "audit": {
+      "verdict": "hot_outdated",
+      "verdictLabel": "Устаревший сайт и дизайн",
+      "websiteScore": 4,
+      "designScore": 3,
+      "issues": [
+        "Устаревший визуальный стиль: сайт выглядит как шаблон начала 2010-х, слабая типографика и перегруженная верстка.",
+        "Технические ошибки и UX: присутствуют элементы интернет-магазина (Shopping cart, Subtotal), что неуместно для медицинской клиники и сбивает пациента с толку.",
+        "Некачественный контент: FAQ содержит шаблонный текст, не несущий пользы, а структура разделов выглядит разрозненно и непрофессионально."
+      ],
+      "pitchSuggestions": [
+        "Интерактивный калькулятор стоимости лечения: поможет пациенту рассчитать примерный бюджет и повысит конверсию в заявку.",
+        "Современная галерея «До/После» с удобным фильтром по процедурам, вызывающая доверие к результатам работы врачей.",
+        "Форма онлайн-консультации с возможностью прикрепления рентгеновских снимков или фото зубов прямо на сайте, интегрированная с CRM."
+      ],
+      "salesPitch": "Добрый день! Изучил ваш сайт: у вас отличные услуги, но текущий дизайн с элементами интернет-магазина снижает доверие иностранных пациентов и конверсию в запись. Помогу разработать современный, продающий сайт с калькулятором цен и удобной записью на прием, который будет выделять вас среди конкурентов в Стамбуле. Готовы обсудить, как мы можем обновить ваш имидж и увеличить поток клиентов?",
+      "scannedAt": "2026-11-22T12:39:24.238Z"
+    },
+    "isFavorite": false
+  },
+  {
+    "id": "biz_748a1b5f3d",
+    "name": "Dentakademi Oral and Dental Healthcare Center",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Стамбул",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Стамбул",
+    "placeId": "ChIJS1qgzaHGyhQR0lEM9TwIF-A",
+    "address": "Bağlarbaşı, Atatürk Cd. No:122, 34844 Maltepe/İstanbul, Турция",
+    "lat": 40.9318648,
+    "lng": 29.1361858,
+    "rating": 4.8,
+    "userRatingCount": 3547,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 4448891",
+    "websiteUrl": "https://www.dentakademi.com.tr/",
+    "googleMapsUrl": "https://maps.google.com/?cid=16147384046862488018&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Стоматологическая клиника по адресу Bağlarbaşı, Atatürk Cd. No:122, Maltepe.",
+    "openingHours": [
+      "понедельник: 09:00—23:00",
+      "вторник: 09:00—23:00",
+      "среда: 09:00—23:00",
+      "четверг: 09:00—23:00",
+      "пятница: 09:00—23:00",
+      "суббота: 09:00—23:00",
+      "воскресенье: 09:00—23:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Dentakademi Oral and Dental Healthcare Center на Google Картах",
+        "url": "https://maps.google.com/?cid=16147384046862488018&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://www.dentakademi.com.tr/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:25:20.229Z"
+  },
+  {
+    "id": "biz_611fcb285d",
+    "name": "Laviva Clinic: Smile & Dental Trip in Istanbul",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Стамбул",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Стамбул",
+    "placeId": "ChIJQ6bpTM-3yhQRNfZRSY4g2vA",
+    "address": "Merkez, Bomonti Arkası Sk. No:4, 34381 Şişli/İstanbul, Турция",
+    "lat": 41.059070999999996,
+    "lng": 28.9794529,
+    "rating": 5,
+    "userRatingCount": 277,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 531 024 97 37",
+    "websiteUrl": "https://lavivaclinic.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=17355219909513180725&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Стоматологическая клиника по адресу Merkez, Bomonti Arkası Sk. No:4, Şişli.",
+    "openingHours": [
+      "понедельник: 24 часа в сутки",
+      "вторник: 24 часа в сутки",
+      "среда: 24 часа в сутки",
+      "четверг: 24 часа в сутки",
+      "пятница: 24 часа в сутки",
+      "суббота: 24 часа в сутки",
+      "воскресенье: 24 часа в сутки"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Laviva Clinic: Smile & Dental Trip in Istanbul на Google Картах",
+        "url": "https://maps.google.com/?cid=17355219909513180725&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://lavivaclinic.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:25:20.229Z"
+  },
+  {
+    "id": "biz_7972485ec6",
+    "name": "Dr Feras Clinics",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Стамбул",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Стамбул",
+    "placeId": "ChIJBZVC5zy9yhQREBr-w-jGIJc",
+    "address": "Çukur, Tarlabaşı Blv No:150 kat:3 No:25, 34435 Beyoğlu/İstanbul, Турция",
+    "lat": 41.036319899999995,
+    "lng": 28.978419700000003,
+    "rating": 5,
+    "userRatingCount": 268,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 554 741 48 00",
+    "websiteUrl": "http://ozelmcs.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=10889922602004781584&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Стоматологическая клиника по адресу Çukur, Tarlabaşı Blv No:150 kat:3 No:25, Beyoğlu.",
+    "openingHours": [
+      "понедельник: 09:00—21:00",
+      "вторник: 09:00—21:00",
+      "среда: 09:00—21:00",
+      "четверг: 09:00—21:00",
+      "пятница: 09:00—21:00",
+      "суббота: 09:00—21:00",
+      "воскресенье: 09:00—21:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Dr Feras Clinics на Google Картах",
+        "url": "https://maps.google.com/?cid=10889922602004781584&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "http://ozelmcs.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:25:20.229Z"
+  },
+  {
+    "id": "biz_90fb333819",
+    "name": "Dentfix Dental Clinic in istanbul Turkey",
+    "category": "Стоматологическая клиника",
+    "query": "стоматологии Стамбул",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Стамбул",
+    "placeId": "ChIJuwg9M4S3yhQRypZeLTHNfaY",
+    "address": "19 Mayıs, Halaskargazi Cd. No:170, 34360 Şişli/İstanbul, Турция",
+    "lat": 41.058006,
+    "lng": 28.987138400000003,
+    "rating": 4.7,
+    "userRatingCount": 478,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 549 680 73 72",
+    "websiteUrl": "https://dentfixturkey.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=11996970593483134666&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Стоматологическая клиника по адресу 19 Mayıs, Halaskargazi Cd. No:170, Şişli.",
+    "openingHours": [
+      "понедельник: 10:00—21:00",
+      "вторник: 10:00—21:00",
+      "среда: 10:00—21:00",
+      "четверг: 10:00—21:00",
+      "пятница: 10:00—21:00",
+      "суббота: 10:00—21:00",
+      "воскресенье: 10:00—21:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Dentfix Dental Clinic in istanbul Turkey на Google Картах",
+        "url": "https://maps.google.com/?cid=11996970593483134666&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://dentfixturkey.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:25:20.229Z"
+  },
+  {
+    "id": "biz_c56e931123",
+    "name": "DR MERT AKBAŞ DİŞ KLİNİĞİ-1 ÇENE CERRAHİSİ ZİGOMATİK İMPLANT - MAXILLOFACIAL SURGERY - Dentist - Zahnarzt- стоматолог",
+    "category": "Стоматолог",
+    "query": "стоматологии Стамбул",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Стамбул",
+    "placeId": "ChIJAxJpZou1yhQRGcDEG_JFOAY",
+    "address": "Özel Seba Diş Polikliniği, Haseki Sultan, Turgut Özal Millet Cd. No: 59, 34096 Fatih/İstanbul, Турция",
+    "lat": 41.0117058,
+    "lng": 28.9395398,
+    "rating": 5,
+    "userRatingCount": 1092,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+90 555 740 92 41",
+    "websiteUrl": "http://drmertakbas.com.tr/",
+    "googleMapsUrl": "https://maps.google.com/?cid=448185069073645593&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Стоматолог по адресу Özel Seba Diş Polikliniği, Haseki Sultan, Turgut Özal Millet Cd. No: 59, Fatih.",
+    "openingHours": [
+      "понедельник: 09:00—21:00",
+      "вторник: 09:00—21:00",
+      "среда: 09:00—21:00",
+      "четверг: 09:00—21:00",
+      "пятница: 09:00—21:00",
+      "суббота: 09:00—21:00",
+      "воскресенье: Закрыто"
+    ],
+    "sourceLinks": [
+      {
+        "title": "DR MERT AKBAŞ DİŞ KLİNİĞİ-1 ÇENE CERRAHİSİ ZİGOMATİK İMPLANT - MAXILLOFACIAL SURGERY - Dentist - Zahnarzt- стоматолог на Google Картах",
+        "url": "https://maps.google.com/?cid=448185069073645593&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "http://drmertakbas.com.tr/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:25:20.229Z"
+  },
+  {
+    "id": "biz_27ed4d3222",
+    "name": "Fellas Barber's",
+    "category": "Мужская парикмахерская",
+    "query": "барбершопы Лиссабон",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лиссабон",
+    "placeId": "ChIJ0_tx5LwzGQ0ROd0g-msPeKo",
+    "address": "Alameda Dom Afonso Henriques 47A, 1000-123 Lisboa, Португалия",
+    "lat": 38.7364122,
+    "lng": -9.1358451,
+    "rating": 4.9,
+    "userRatingCount": 1597,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+351 912 286 442",
+    "websiteUrl": "http://www.fellasbarber.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=12283584940085402937&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Мужская парикмахерская по адресу Alameda Dom Afonso Henriques 47A, Lisboa.",
+    "openingHours": [
+      "понедельник: 09:00—20:00",
+      "вторник: 09:00—20:00",
+      "среда: 09:00—20:00",
+      "четверг: 09:00—20:00",
+      "пятница: 09:00—20:00",
+      "суббота: 09:00—18:00",
+      "воскресенье: 10:00—14:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Fellas Barber's на Google Картах",
+        "url": "https://maps.google.com/?cid=12283584940085402937&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "http://www.fellasbarber.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:18:20.200Z"
+  },
+  {
+    "id": "biz_9d51e5b0bc",
+    "name": "The Barber Company",
+    "category": "Мужская парикмахерская",
+    "query": "барбершопы Лиссабон",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лиссабон",
+    "placeId": "ChIJHyrAIKQzGQ0RuBcxZ1hiEAk",
+    "address": "Av. Fontes Pereira de Melo 42 E, Loja 0-26, 1050-250 Lisboa, Португалия",
+    "lat": 38.7317418,
+    "lng": -9.1455438,
+    "rating": 4.9,
+    "userRatingCount": 628,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+351 21 051 7524",
+    "websiteUrl": "https://inventore.net/agenda-online-gicnet/?id=Atbc0100315",
+    "googleMapsUrl": "https://maps.google.com/?cid=653130077796636600&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Мужская парикмахерская по адресу Av. Fontes Pereira de Melo 42 E, Loja 0-26, Lisboa.",
+    "openingHours": [
+      "понедельник: 10:00—22:00",
+      "вторник: 10:00—22:00",
+      "среда: 10:00—22:00",
+      "четверг: 10:00—22:00",
+      "пятница: 10:00—22:00",
+      "суббота: 10:00—22:00",
+      "воскресенье: 10:00—20:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "The Barber Company на Google Картах",
+        "url": "https://maps.google.com/?cid=653130077796636600&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://inventore.net/agenda-online-gicnet/?id=Atbc0100315",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:18:20.200Z"
+  },
+  {
+    "id": "biz_186054e417",
+    "name": "The Hooligans - Barbershop & Pub",
+    "category": "Мужская парикмахерская",
+    "query": "барбершопы Лиссабон",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лиссабон",
+    "placeId": "ChIJi_344zI1GQ0Rgv8uJ9hp3Io",
+    "address": "R. das Pedras Negras 28, 1100-226 Lisboa, Португалия",
+    "lat": 38.7108874,
+    "lng": -9.1350263,
+    "rating": 5,
+    "userRatingCount": 549,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+351 21 242 8041",
+    "websiteUrl": "https://thehooliganslisboa.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=10005988849201643394&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Мужская парикмахерская по адресу R. das Pedras Negras 28, Lisboa.",
+    "openingHours": [
+      "понедельник: 10:00—18:30",
+      "вторник: 10:00—18:30",
+      "среда: 10:00—18:30",
+      "четверг: 10:00—18:30",
+      "пятница: 10:00—18:30",
+      "суббота: 10:00—18:30",
+      "воскресенье: Закрыто"
+    ],
+    "sourceLinks": [
+      {
+        "title": "The Hooligans - Barbershop & Pub на Google Картах",
+        "url": "https://maps.google.com/?cid=10005988849201643394&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://thehooliganslisboa.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:18:20.200Z"
+  },
+  {
+    "id": "biz_0592a0b43b",
+    "name": "Figaro's Barbershop Rosemary",
+    "category": "Мужская парикмахерская",
+    "query": "барбершопы Лиссабон",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лиссабон",
+    "placeId": "ChIJYWMCeX40GQ0RmRS8xovRmcI",
+    "address": "R. do Alecrim 39, 1200-014 Lisboa, Португалия",
+    "lat": 38.7079977,
+    "lng": -9.1434208,
+    "rating": 4.3,
+    "userRatingCount": 815,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+351 21 347 0199",
+    "websiteUrl": "https://figaroslisboa.com/",
+    "googleMapsUrl": "https://maps.google.com/?cid=14022469313059624089&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Мужская парикмахерская по адресу R. do Alecrim 39, Lisboa.",
+    "openingHours": [
+      "понедельник: 10:00—20:00",
+      "вторник: 10:00—20:00",
+      "среда: 10:00—20:00",
+      "четверг: 10:00—20:00",
+      "пятница: 10:00—20:00",
+      "суббота: 10:00—20:00",
+      "воскресенье: 10:00—20:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Figaro's Barbershop Rosemary на Google Картах",
+        "url": "https://maps.google.com/?cid=14022469313059624089&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://figaroslisboa.com/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:18:20.200Z"
+  },
+  {
+    "id": "biz_d59fad90cb",
+    "name": "Beard Man Barber shop",
+    "category": "Мужская парикмахерская",
+    "query": "барбершопы Лиссабон",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лиссабон",
+    "placeId": "ChIJbZatj-8zGQ0RXi761A9g3Cc",
+    "address": "R. Campo de Ourique 36A, 1250-061 Lisboa, Португалия",
+    "lat": 38.7205071,
+    "lng": -9.162029,
+    "rating": 4.9,
+    "userRatingCount": 309,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+351 21 247 9509",
+    "googleMapsUrl": "https://maps.google.com/?cid=2872276283469475422&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Мужская парикмахерская по адресу R. Campo de Ourique 36A, Lisboa.",
+    "openingHours": [
+      "понедельник: 09:00—20:30",
+      "вторник: 09:00—20:30",
+      "среда: 09:00—20:30",
+      "четверг: 09:00—20:30",
+      "пятница: 09:00—20:30",
+      "суббота: 09:00—20:30",
+      "воскресенье: 10:30—18:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Beard Man Barber shop на Google Картах",
+        "url": "https://maps.google.com/?cid=2872276283469475422&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:18:20.200Z"
+  },
+  {
+    "id": "biz_3508915830",
+    "name": "CR Barber Shop",
+    "category": "Мужская парикмахерская",
+    "query": "барбершопы Лиссабон",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лиссабон",
+    "placeId": "ChIJj5wW6FgzGQ0R-hbSU5dD8xg",
+    "address": "Av. Conde de Valbom 124 C, 1050-060 Lisboa, Португалия",
+    "lat": 38.738074499999996,
+    "lng": -9.1522224,
+    "rating": 4.9,
+    "userRatingCount": 307,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+351 21 796 7218",
+    "googleMapsUrl": "https://maps.google.com/?cid=1797854993476359930&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Мужская парикмахерская по адресу Av. Conde de Valbom 124 C, Lisboa.",
+    "openingHours": [
+      "понедельник: 09:00—20:00",
+      "вторник: 09:00—20:00",
+      "среда: 09:00—20:00",
+      "четверг: 09:00—20:00",
+      "пятница: 09:00—20:00",
+      "суббота: 09:00—20:00",
+      "воскресенье: 09:00—20:00"
+    ],
+    "sourceLinks": [
+      {
+        "title": "CR Barber Shop на Google Картах",
+        "url": "https://maps.google.com/?cid=1797854993476359930&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-22T12:18:20.200Z"
+  }
+]
