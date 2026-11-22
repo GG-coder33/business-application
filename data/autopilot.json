@@ -10,13 +10,14 @@
     "Лиссабон",
     "Стамбул",
     "Белград",
-    "Алматы"
+    "Алматы",
+    "Вена"
   ],
   "isRunning": false,
-  "nextRunAt": "2026-11-22T19:32:24.198Z",
-  "lastRunAt": "2026-11-22T19:27:24.198Z",
-  "lastCity": "Алматы",
-  "lastNiche": "стоматологии",
+  "nextRunAt": "2026-11-22T19:37:24.323Z",
+  "lastRunAt": "2026-11-22T19:32:24.323Z",
+  "lastCity": "Вена",
+  "lastNiche": "кофейни",
   "lastAddedCount": 0,
   "lastScannedCount": 0
 }

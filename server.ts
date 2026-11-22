@@ -144,6 +144,34 @@ const REGION_CITY_PROFILES: Record<Exclude<AutopilotRegion, 'custom'>, CityTarge
     { city: 'Ташкент', country: 'Узбекистан', regionCode: 'UZ' },
     { city: 'Ереван', country: 'Армения', regionCode: 'AM' },
     { city: 'Душанбе', country: 'Таджикистан', regionCode: 'TJ' },
+    // Расширение географии поиска (30+ городов)
+    { city: 'Москва', country: 'Россия', regionCode: 'RU' },
+    { city: 'Санкт-Петербург', country: 'Россия', regionCode: 'RU' },
+    { city: 'Новосибирск', country: 'Россия', regionCode: 'RU' },
+    { city: 'Париж', country: 'Франция', regionCode: 'FR' },
+    { city: 'Лондон', country: 'Великобритания', regionCode: 'GB' },
+    { city: 'Цюрих', country: 'Швейцария', regionCode: 'CH' },
+    { city: 'Киев', country: 'Украина', regionCode: 'UA' },
+    { city: 'Доха', country: 'Катар', regionCode: 'QA' },
+    { city: 'Эр-Рияд', country: 'Саудовская Аравия', regionCode: 'SA' },
+    { city: 'Дубай', country: 'ОАЭ', regionCode: 'AE' },
+    { city: 'Нью-Йорк', country: 'США', regionCode: 'US' },
+    { city: 'Лос-Анджелес', country: 'США', regionCode: 'US' },
+    { city: 'Мумбаи', country: 'Индия', regionCode: 'IN' },
+    { city: 'Пекин', country: 'Китай', regionCode: 'CN' },
+    { city: 'Сидней', country: 'Австралия', regionCode: 'AU' },
+    { city: 'Йоханнесбург', country: 'ЮАР', regionCode: 'ZA' },
+    { city: 'Рим', country: 'Италия', regionCode: 'IT' },
+    { city: 'Афины', country: 'Греция', regionCode: 'GR' },
+    { city: 'Загреб', country: 'Хорватия', regionCode: 'HR' },
+    { city: 'Братислава', country: 'Словакия', regionCode: 'SK' },
+    { city: 'Бухарест', country: 'Румыния', regionCode: 'RO' },
+    { city: 'Вильнюс', country: 'Литва', regionCode: 'LT' },
+    { city: 'Мехико', country: 'Мексика', regionCode: 'MX' },
+    { city: 'Буэнос-Айрес', country: 'Аргентина', regionCode: 'AR' },
+    { city: 'Стамбул', country: 'Турция', regionCode: 'TR' },
+    { city: 'Баку', country: 'Азербайджан', regionCode: 'AZ' },
+    { city: 'Минск', country: 'Беларусь', regionCode: 'BY' },
   ],
 };
 
@@ -995,6 +1023,70 @@ function clampScore(val: unknown, fallback: number): number {
   return Math.min(10, Math.max(1, Math.round(val)));
 }
 
+/** Deduplicate city pools by normalized city name (keeps first occurrence). */
+function dedupeCityTargets(list: CityTarget[]): CityTarget[] {
+  const seen = new Set<string>();
+  const out: CityTarget[] = [];
+  for (const item of list) {
+    const key = item.city.toLowerCase().trim();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(item);
+  }
+  return out;
+}
+
+/** Deterministic shuffle (Fisher–Yates with seeded PRNG) so every cycle visits a fresh spread of cities. */
+function seededShuffle<T>(list: T[], seed: number): T[] {
+  const arr = [...list];
+  let s = seed >>> 0 || 1;
+  const rand = () => {
+    // mulberry32
+    s |= 0;
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/** Follow redirect chains without fetching the body — detects dead domains parked on ad/marketplace pages. */
+async function isLiveDomain(url: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+      },
+      signal: AbortSignal.timeout(5000),
+    });
+    const finalHost = (() => {
+      try {
+        return new URL(res.url || url).hostname.toLowerCase();
+      } catch {
+        return '';
+      }
+    })();
+    const PARKING_HOSTS = [
+      'sedo', 'dan.com', 'afternic', 'godaddy', 'parkingcrew', 'parked',
+      'domainmarket', 'sav.com', 'teaminternet', 'yandex.ru/parking', 'rusonyx',
+      'park.ru', 'advacancedmedia', 'wixsite.com', 'cpannel', 'bluehost',
+      'hostgator', 'sites.google.com', 't.me', 'instagram.com', 'vk.com', 'facebook.com',
+    ];
+    if (PARKING_HOSTS.some((p) => finalHost.includes(p))) return false;
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 interface DetailedSiteInspection {
   signals: SiteTechnicalSignals;
   title?: string;
@@ -1088,6 +1180,12 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
     const finalUrl = res.url || rawUrl;
     const usesHttps = finalUrl.startsWith('https://');
     const html = (await res.text()).slice(0, 700_000);
+
+    // Detect parked / domain-for-sale landing pages (dead business sites)
+    const isParkedPage =
+      /domain (?:is for sale|for sale|may be available)|buy this domain|make an offer|домен продается|купить домен|свободен для регистрации|parked domain|this domain name is (?:expired|parked|reserved)/i.test(
+        html.slice(0, 20_000)
+      );
 
     // Fetch up to 3 external stylesheets to inspect real CSS layout & typography
     const cssUrls = Array.from(
@@ -1277,6 +1375,25 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
       redFlags.push(`Копирайт в футере устарел (${latestYear})`);
     }
 
+    // Parked / dead domain detection — a "site" that is actually a domain-for-sale page
+    if (isParkedPage) {
+      redFlags.push('Домен припаркован или продается — сайт бизнеса фактически не работает');
+    }
+
+    // CMS generator meta tag (e.g. "WordPress 4.9" — outdated core)
+    const generatorMeta = html
+      .match(/<meta[^>]+name=["']generator["'][^>]+content=["']([^"']+)["']/i)?.[1]
+      ?.trim();
+    if (generatorMeta) {
+      const genYear = generatorMeta.match(/\b(19|20)\d{2}\b/);
+      if ((genYear && Number(genYear[0]) <= 2019) || /joomla!?\s*[12]\.|drupal\s*[67]\./i.test(generatorMeta)) {
+        redFlags.push(`Устаревшая CMS в meta generator: ${generatorMeta}`);
+      }
+    }
+
+    // Favicon presence (basic brand/polish signal)
+    const hasFavicon = /<link[^>]+rel=["'][^"']*icon[^"']*["']/i.test(html);
+
     // Compute objective modernIndex (1..10)
     let score = 4;
     if (usesHttps) score += 1;
@@ -1295,9 +1412,13 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
     }
     if (widgets.length >= 2) score += 0.5;
     if (latestYear && latestYear >= 2024) score += 0.5;
+    if (hasStructuredData) score += 0.25;
+    if (hasFavicon) score += 0.25;
+    if (html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length < 300 && !isParkedPage) score -= 0.5;
 
     // Penalize verified red flags
     score -= redFlags.length * 1.1;
+    if (isParkedPage) score -= 2;
     const modernIndex = Math.min(10, Math.max(1, Math.round(score)));
 
     // Extract readable headings & visible text digest for Gemini
@@ -1339,6 +1460,8 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
         widgets,
         redFlags,
         modernIndex,
+        parkedDomain: isParkedPage || undefined,
+        generator: generatorMeta,
       },
       title,
       metaDescription,
@@ -1397,7 +1520,7 @@ async function auditAndEnrichLead(
 - Кастомные веб-шрифты: ${inspection.signals.fonts.length > 0 ? inspection.signals.fonts.join(', ') : 'Только системные/не найдены'}
 - Современные фичи вёрстки/медиа: ${inspection.signals.layoutFeatures.length > 0 ? inspection.signals.layoutFeatures.join(', ') : 'Не обнаружены'}
 - Найденные виджеты/конверсия: ${inspection.signals.widgets.length > 0 ? inspection.signals.widgets.join(', ') : 'Не найдены'}
-- Зафиксированные проблемы кода/дизайна: ${inspection.signals.redFlags.length > 0 ? inspection.signals.redFlags.join('; ') : 'Критичных устаревших паттернов не обнаружено'}
+- Зафиксированные проблемы кода/дизайна: ${inspection.signals.redFlags.length > 0 ? inspection.signals.redFlags.join('; ') : 'Критичных устаревших паттернов не обнаружено'}${inspection.signals.parkedDomain ? '\n- ⚠️ МЁРТВЫЙ САЙТ: домен припаркован/продаётся — считай это равнозначным отсутствию сайта (verdict "hot_outdated", оценки 1–3).' : ''}${inspection.signals.generator ? `\n- Meta generator (CMS): ${inspection.signals.generator}` : ''}
 - Объективный технический индекс (1-10): ${inspection.signals.modernIndex}/10
 - Title: ${inspection.title || '—'}
 - Заголовки H1-H3: ${inspection.headings.join(' | ') || '—'}
@@ -1501,8 +1624,12 @@ ${signalsBlock}
     const idx = inspection.signals.modernIndex;
     const redFlagCount = inspection.signals.redFlags.length;
 
-    // Prevent false "hot_outdated" classification on verified modern/premium stacks
-    if (idx >= 8 && redFlagCount === 0) {
+    if (inspection.signals.parkedDomain) {
+      // Parked / for-sale domain is objectively a dead site regardless of AI opinion
+      websiteScore = Math.min(websiteScore, 2);
+      designScore = Math.min(designScore, 2);
+      verdict = 'hot_outdated';
+    } else if (idx >= 8 && redFlagCount === 0) {
       websiteScore = Math.max(websiteScore, 8);
       designScore = Math.max(designScore, 7);
       verdict = 'modern_ok';
@@ -1739,9 +1866,12 @@ function pickNextCityAndNiche(config: AutopilotConfig): {
   }
 
   const effectiveRegion = config.region === 'custom' ? 'world' : config.region;
-  const fallbackPool = REGION_CITY_PROFILES[effectiveRegion];
-  const unvisitedFallback = fallbackPool.filter(
-    (item) => !recentVisited.has(item.city.toLowerCase())
+  const fallbackPool = dedupeCityTargets(REGION_CITY_PROFILES[effectiveRegion]);
+  // Prioritize cities not visited in the recent rotation, but keep a wide spread:
+  // shuffle the unvisited pool so consecutive cycles hit diverse cities (20+ unique targets).
+  const unvisitedFallback = seededShuffle(
+    fallbackPool.filter((item) => !recentVisited.has(item.city.toLowerCase())),
+    Date.now() % 2147483647
   );
   const pool = unvisitedFallback.length > 0 ? unvisitedFallback : fallbackPool;
   const chosen = pool[Math.floor(Math.random() * pool.length)];
@@ -1813,8 +1943,8 @@ async function runAutopilotCycle(
         ? REGION_ALLOWED_COUNTRIES[config.region]
         : undefined;
 
-    // Try up to 2 cities if the first city has no fresh candidates
-    for (let attempt = 0; attempt < 2; attempt++) {
+    // Try up to 3 cities if the first city has no fresh candidates (wider 20+ city rotation)
+    for (let attempt = 0; attempt < 3; attempt++) {
       const picked = pickNextCityAndNiche({
         ...config,
         visitedCities: Array.from(triedCities),
