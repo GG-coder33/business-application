@@ -11,7 +11,7 @@
     "Стамбул",
     "Белград"
   ],
-  "isRunning": true,
+  "isRunning": false,
   "nextRunAt": "2026-11-22T12:35:48.608Z",
   "lastRunAt": "2026-11-22T12:30:48.608Z",
   "lastCity": "Белград",
