@@ -17,6 +17,7 @@ import type {
   BusinessLead,
   GroundedLink,
   SearchSource,
+  SiteTechnicalSignals,
   WebsiteAudit,
 } from './src/types.ts';
 
@@ -362,8 +363,16 @@ async function generateWithRetry(
           return await callModel('gemini-3.1-flash-lite', [{ googleSearch: {} }]);
         }
         if (isRetryableGeminiError(errLite1)) {
-          await sleep(1800);
-          return await callModel('gemini-3.1-flash-lite', params.tools);
+          await sleep(1400);
+          try {
+            return await callModel('gemini-3.1-flash-lite', params.tools);
+          } catch (errLite2) {
+            if (isGeminiTransientError(errLite2)) {
+              await sleep(2800);
+              return await callModel('gemini-3.1-flash-lite', params.tools);
+            }
+            throw errLite2;
+          }
         }
         throw errLite1;
       }
@@ -986,10 +995,370 @@ function clampScore(val: unknown, fallback: number): number {
   return Math.min(10, Math.max(1, Math.round(val)));
 }
 
+interface DetailedSiteInspection {
+  signals: SiteTechnicalSignals;
+  title?: string;
+  metaDescription?: string;
+  headings: string[];
+  textSnippet: string;
+  textLength: number;
+  extractedTelegram?: { telegramHandle?: string; telegramUrl?: string };
+  extractedSocials: string[];
+}
+
+const GENERIC_FONT_TOKENS = new Set([
+  'inherit',
+  'initial',
+  'unset',
+  'sans-serif',
+  'serif',
+  'monospace',
+  'cursive',
+  'fantasy',
+  'system-ui',
+  '-apple-system',
+  'blinkmacsystemfont',
+  'segoe ui',
+  'roboto',
+  'helvetica',
+  'helvetica neue',
+  'arial',
+  'times new roman',
+  'tahoma',
+  'verdana',
+  'georgia',
+  'courier new',
+  'consolas',
+  'monaco',
+  'menlo',
+  'liberation mono',
+  'sfmono-regular',
+  'apple color emoji',
+  'segoe ui emoji',
+  'noto color emoji',
+  'eicons',
+  'fontawesome',
+  'font awesome',
+  'dashicons',
+  'simple-line-icons',
+  'vcpb-plugin-icons',
+  'icomoon',
+  'slick',
+  'swiper-icons',
+]);
+
+async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspection> {
+  const emptyResult = (reason: string, botProtected = false): DetailedSiteInspection => ({
+    signals: {
+      reachable: false,
+      botProtected,
+      finalUrl: rawUrl,
+      usesHttps: rawUrl.startsWith('https://'),
+      hasViewportMeta: false,
+      stack: [],
+      fonts: [],
+      layoutFeatures: [],
+      widgets: [],
+      redFlags: botProtected ? [] : [reason],
+      modernIndex: botProtected ? 6 : 3,
+    },
+    headings: [],
+    textSnippet: '',
+    textLength: 0,
+    extractedSocials: [],
+  });
+
+  try {
+    const res = await fetch(rawUrl, {
+      redirect: 'follow',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+      },
+      signal: AbortSignal.timeout(6500),
+    });
+
+    if (!res.ok) {
+      const isBotBlock = res.status === 401 || res.status === 403 || res.status === 429 || res.status === 503;
+      return emptyResult(`Сервер сайта вернул ошибку HTTP ${res.status}`, isBotBlock);
+    }
+
+    const finalUrl = res.url || rawUrl;
+    const usesHttps = finalUrl.startsWith('https://');
+    const html = (await res.text()).slice(0, 700_000);
+
+    // Fetch up to 3 external stylesheets to inspect real CSS layout & typography
+    const cssUrls = Array.from(
+      html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/gi)
+    )
+      .map((m) => {
+        try {
+          return new URL(m[1], finalUrl).href;
+        } catch {
+          return null;
+        }
+      })
+      .filter((u): u is string => Boolean(u && /^https?:\/\//i.test(u)))
+      .slice(0, 3);
+
+    const cssBodies = await Promise.all(
+      cssUrls.map(async (cu) => {
+        try {
+          const cr = await fetch(cu, {
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+            signal: AbortSignal.timeout(3500),
+          });
+          if (!cr.ok) return '';
+          return (await cr.text()).slice(0, 70_000);
+        } catch {
+          return '';
+        }
+      })
+    );
+
+    const combinedCssAndHtml = `${html}\n${cssBodies.join('\n')}`;
+    const hasViewportMeta = /<meta[^>]+name=["']viewport["']/i.test(html);
+    const hasOgImage = /property=["']og:image["']/i.test(html);
+    const hasStructuredData = /application\/ld\+json/i.test(html);
+
+    // Detect tech stack & builders
+    const stack: string[] = [];
+    if (/_next\/static|__NEXT_DATA__/i.test(html)) stack.push('Next.js');
+    else if (/__NUXT__|_nuxt\//i.test(html)) stack.push('Nuxt');
+    else if (/astro-island|data-astro/i.test(html)) stack.push('Astro');
+
+    if (/webflow\.js|data-wf-site|w-nav/i.test(html)) stack.push('Webflow');
+    if (/framerusercontent|data-framer/i.test(html)) stack.push('Framer');
+    if (/tildacdn|tilda-blocks/i.test(html)) {
+      stack.push(/t396|t-records/i.test(html) ? 'Tilda (Zero Block)' : 'Tilda');
+    }
+    if (/wix\.com|wixstatic/i.test(html)) stack.push('Wix');
+    if (/cdn\.shopify\.com/i.test(html)) stack.push('Shopify');
+    if (/elementor/i.test(html)) stack.push('Elementor');
+    if (/wpbakery|vc_row|js_composer/i.test(combinedCssAndHtml)) stack.push('WPBakery');
+    if (/wp-content|wp-includes/i.test(html) && !stack.includes('Elementor') && !stack.includes('WPBakery')) {
+      stack.push('WordPress');
+    }
+    if (/\/bitrix\//i.test(html)) stack.push('1C-Битрикс');
+    if (/tailwind/i.test(combinedCssAndHtml)) stack.push('Tailwind CSS');
+
+    // Detect custom web fonts (excluding icon & generic system fonts)
+    const fontSet = new Set<string>();
+    const googleFontMatches = html.matchAll(/fonts\.googleapis\.com\/css2?\?[^"']*family=([^"'&]+)/gi);
+    for (const m of googleFontMatches) {
+      const families = decodeURIComponent(m[1]).split('|');
+      for (const fam of families) {
+        const clean = fam.split(':')[0].replace(/\+/g, ' ').trim();
+        if (clean && !GENERIC_FONT_TOKENS.has(clean.toLowerCase())) {
+          fontSet.add(clean);
+        }
+      }
+    }
+    const fontFamilyMatches = combinedCssAndHtml.matchAll(/font-family\s*:\s*([^;}{]{2,80})/gi);
+    for (const m of fontFamilyMatches) {
+      const parts = m[1].split(',');
+      for (const rawPart of parts) {
+        const clean = rawPart
+          .replace(/!important/gi, '')
+          .replace(/["']/g, '')
+          .trim();
+        if (
+          clean &&
+          clean.length >= 3 &&
+          clean.length <= 32 &&
+          !/^var\(/i.test(clean) &&
+          !/^wf_/i.test(clean) &&
+          !/^--/.test(clean) &&
+          !/icon|emoji|mono|fallback|inherit/i.test(clean) &&
+          !GENERIC_FONT_TOKENS.has(clean.toLowerCase())
+        ) {
+          fontSet.add(clean);
+        }
+      }
+      if (fontSet.size >= 5) break;
+    }
+    const fonts = Array.from(fontSet).slice(0, 4);
+
+    // Modern CSS & visual media features
+    const usesCssFlex = /display\s*:\s*flex/i.test(combinedCssAndHtml);
+    const usesCssGrid = /display\s*:\s*grid/i.test(combinedCssAndHtml);
+    const usesCssVars = /--[a-z0-9-]{2,}\s*:/i.test(combinedCssAndHtml);
+    const usesClamp = /clamp\(/i.test(combinedCssAndHtml);
+    const hasMediaQueries = /@media\s*\(/i.test(combinedCssAndHtml);
+    const hasModernMotion = /gsap|framer-motion|aos\.css|swiper|lenis|locomotive|lottie|@keyframes/i.test(
+      combinedCssAndHtml
+    );
+
+    const imgCount = (html.match(/<img\b/gi) || []).length;
+    const inlineSvgCount = (html.match(/<svg\b/gi) || []).length;
+    const webpCount = (html.match(/\.webp|\.avif|<picture\b/gi) || []).length;
+    const videoCount = (html.match(/<video\b|youtube\.com|vimeo\.com/gi) || []).length;
+
+    const layoutFeatures: string[] = [];
+    if (usesCssGrid) layoutFeatures.push('CSS Grid');
+    if (usesCssFlex) layoutFeatures.push('Flexbox');
+    if (usesCssVars) layoutFeatures.push('CSS-переменные');
+    if (usesClamp) layoutFeatures.push('Адаптивная типографика clamp()');
+    if (webpCount > 0) layoutFeatures.push('WebP/AVIF медиа');
+    if (inlineSvgCount >= 10) layoutFeatures.push(`${inlineSvgCount} SVG-иконок`);
+    if (videoCount > 0) layoutFeatures.push('Видео-контент');
+    if (hasModernMotion) layoutFeatures.push('Современные анимации/слайдеры');
+    if (hasOgImage) layoutFeatures.push('OpenGraph');
+    if (hasStructuredData) layoutFeatures.push('Schema.org');
+
+    // Widgets & real contact links scraped directly from HTML
+    const widgets: string[] = [];
+    if (/wa\.me\/|api\.whatsapp\.com|whatsapp/i.test(html)) widgets.push('WhatsApp');
+    if (/t\.me\/|telegram\.me\//i.test(html)) widgets.push('Telegram');
+    if (/yclients|altegio|calendly|dikidi|medflex|prodoctorov/i.test(html)) {
+      widgets.push('Онлайн-запись');
+    }
+    if (/marquiz|envybox|quiz/i.test(html)) widgets.push('Квиз/калькулятор');
+    if (/jivosite|jivo|bitrix24|amocrm|carrotquest|intercom|crisp/i.test(html)) {
+      widgets.push('CRM/Онлайн-чат');
+    }
+    const formCount = (html.match(/<form\b/gi) || []).length;
+    if (formCount > 0) widgets.push(`Формы (${formCount})`);
+    if (/href=["']tel:/i.test(html)) widgets.push('Клик-звонок tel:');
+
+    // Extract actual Telegram & Social links from HTML
+    let extractedTelegram: { telegramHandle?: string; telegramUrl?: string } | undefined;
+    const tgHrefMatch = html.match(
+      /href=["'](https?:\/\/(?:t\.me|telegram\.me)\/(?!share\b)[a-zA-Z0-9_+/]{3,64})["']/i
+    );
+    if (tgHrefMatch?.[1]) {
+      const norm = normalizeTelegram(tgHrefMatch[1]);
+      if (norm.telegramUrl) extractedTelegram = norm;
+    }
+
+    const socialSet = new Set<string>();
+    for (const sm of html.matchAll(
+      /href=["'](https?:\/\/(?:www\.)?(?:instagram\.com|vk\.com|youtube\.com|tiktok\.com|facebook\.com)\/[^"'\s<>]{2,80})["']/gi
+    )) {
+      if (isSafeHttpUrl(sm[1])) socialSet.add(sm[1]);
+      if (socialSet.size >= 4) break;
+    }
+
+    // Legacy / Red Flags detection
+    const redFlags: string[] = [];
+    if (!usesHttps) redFlags.push('Сайт работает по HTTP без SSL-шифрования');
+    if (!hasViewportMeta) redFlags.push('Отсутствует meta viewport (нет мобильной адаптации)');
+
+    const tableCount = (html.match(/<table\b/gi) || []).length;
+    if (tableCount > 3 && !usesCssGrid) {
+      redFlags.push(`Табличная вёрстка (${tableCount} <table>)`);
+    }
+    if (/<frameset|<marquee|<font\b/i.test(html)) {
+      redFlags.push('Устаревшие HTML4-теги (<font>/<marquee>/<frameset>)');
+    }
+    if (/jquery[.-]?1\.[0-9.]+/i.test(html)) {
+      redFlags.push('Устаревший jQuery 1.x');
+    }
+    if (/col-xs-|navbar-default|panel-default/i.test(combinedCssAndHtml)) {
+      redFlags.push('Устаревший Bootstrap 2/3');
+    }
+    if (stack.includes('WPBakery')) {
+      redFlags.push('Устаревший конструктор WPBakery');
+    }
+    if (!usesCssGrid && !usesCssFlex && !usesCssVars && cssBodies.length > 0) {
+      redFlags.push('Отсутствуют современные CSS-сетки (Flexbox/Grid)');
+    }
+    if (fonts.length === 0 && cssBodies.length > 0) {
+      redFlags.push('Не обнаружены кастомные веб-шрифты');
+    }
+    if (imgCount < 3 && inlineSvgCount < 3) {
+      redFlags.push('Крайне мало визуального контента и графики');
+    }
+    const yearMatch = html.match(/©\s*(?:20\d{2}|19\d{2})(?:\s*[-–—]\s*(20\d{2}))?/i);
+    const latestYear = yearMatch ? Number(yearMatch[1] || yearMatch[0].match(/\d{4}/)?.[0]) : undefined;
+    if (latestYear && latestYear <= 2021) {
+      redFlags.push(`Копирайт в футере устарел (${latestYear})`);
+    }
+
+    // Compute objective modernIndex (1..10)
+    let score = 4;
+    if (usesHttps) score += 1;
+    if (hasViewportMeta) score += 1;
+    if (usesCssGrid && usesCssVars) score += 1;
+    else if (usesCssFlex && hasMediaQueries) score += 0.5;
+    if (usesClamp || hasModernMotion) score += 0.5;
+    if (fonts.length > 0) score += 1;
+    if (webpCount > 0 || inlineSvgCount >= 15 || videoCount > 0) score += 1;
+    if (
+      stack.some((s) =>
+        ['Next.js', 'Nuxt', 'Astro', 'Webflow', 'Framer', 'Tilda (Zero Block)', 'Tailwind CSS', 'Shopify'].includes(s)
+      )
+    ) {
+      score += 1;
+    }
+    if (widgets.length >= 2) score += 0.5;
+    if (latestYear && latestYear >= 2024) score += 0.5;
+
+    // Penalize verified red flags
+    score -= redFlags.length * 1.1;
+    const modernIndex = Math.min(10, Math.max(1, Math.round(score)));
+
+    // Extract readable headings & visible text digest for Gemini
+    const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g, ' ').trim();
+    const metaDescription = html
+      .match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]
+      ?.trim();
+
+    const stripTags = (s: string) =>
+      s
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const headings = Array.from(html.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/gi))
+      .map((m) => stripTags(m[1]))
+      .filter((h) => h.length > 2 && h.length < 140)
+      .slice(0, 10);
+
+    const bodyOnly = html
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<svg[\s\S]*?<\/svg>/gi, ' ');
+    const cleanText = stripTags(bodyOnly);
+    const textSnippet = cleanText.slice(0, 1800);
+
+    return {
+      signals: {
+        reachable: true,
+        finalUrl,
+        usesHttps,
+        hasViewportMeta,
+        stack,
+        fonts,
+        layoutFeatures,
+        widgets,
+        redFlags,
+        modernIndex,
+      },
+      title,
+      metaDescription,
+      headings,
+      textSnippet,
+      textLength: cleanText.length,
+      extractedTelegram,
+      extractedSocials: Array.from(socialSet),
+    };
+  } catch (err) {
+    return emptyResult(
+      `Сайт не отвечает или блокирует загрузку (${err instanceof Error ? err.message : 'таймаут'})`
+    );
+  }
+}
+
 /**
  * Combined AI Website & Design Auditor + Contact Enrichment.
- * Evaluates website age/UX/design quality, proposes concrete upgrades to sell a new website,
- * writes a ready-to-send pitch, and extracts Telegram/social contacts.
+ * Inspects live HTML/CSS/typography/widget telemetry first, then combines it
+ * with Gemini evaluation so premium sites are accurately distinguished from outdated ones.
  */
 async function auditAndEnrichLead(
   ai: GoogleGenAI,
@@ -997,38 +1366,74 @@ async function auditAndEnrichLead(
 ): Promise<BusinessLead> {
   const hasUrl = isSafeHttpUrl(lead.websiteUrl);
   const hasRealWebsite = hasUrl && !isSocialOrDirectoryOnlyUrl(lead.websiteUrl);
-  // Only pass googleSearch when there is no full website URL (saves Search Grounding quota)
+
+  const inspection = hasRealWebsite && lead.websiteUrl
+    ? await inspectWebsiteSignals(lead.websiteUrl)
+    : undefined;
+
+  const needUrlContext = Boolean(
+    hasUrl && (!inspection || !inspection.signals.reachable || inspection.textLength < 400)
+  );
   const tools: Array<Record<string, unknown>> = hasUrl
     ? hasRealWebsite
-      ? [{ urlContext: {} }]
+      ? inspection?.signals.botProtected
+        ? [{ urlContext: {} }, { googleSearch: {} }]
+        : needUrlContext
+          ? [{ urlContext: {} }]
+          : []
       : [{ urlContext: {} }, { googleSearch: {} }]
     : [{ googleSearch: {} }];
 
-  const prompt = `Ты — опытный веб-дизайнер, UX-аудитор и специалист по продажам разработки сайтов и веб-приложений.
-Просканируй бизнес, его сайт и дизайн, а также найди контакт в Telegram:
+  const signalsBlock = inspection
+    ? inspection.signals.botProtected
+      ? `\nОБЪЕКТИВНЫЕ СИГНАЛЫ САЙТА:
+- Доступ к прямому HTML ограничен защитой от ботов/WAF (Cloudflare/403) по адресу ${inspection.signals.finalUrl || lead.websiteUrl}.
+- ВАЖНО: Защита от ботов (403) НЕ означает, что сайт устарел или сломан! Многие дорогие бренды, архитектурные и дизайн-студии используют Cloudflare/WAF. Проверь сайт через urlContext/googleSearch, оцени репутацию и уровень студии, и НЕ ставь заниженную оценку за сам факт блокировки.\n`
+      : `\nОБЪЕКТИВНЫЕ ТЕХНИЧЕСКИЕ И ВИЗУАЛЬНЫЕ СИГНАЛЫ САЙТА (извлечены напрямую из живого HTML/CSS):
+- Доступность: ${inspection.signals.reachable ? `Да (${inspection.signals.finalUrl})` : 'Нет / таймаут'}
+- HTTPS / SSL: ${inspection.signals.usesHttps ? 'Да' : 'НЕТ (HTTP)'}
+- Мобильный viewport: ${inspection.signals.hasViewportMeta ? 'Да' : 'НЕТ'}
+- Определённый стек: ${inspection.signals.stack.length > 0 ? inspection.signals.stack.join(', ') : 'Кастомная вёрстка'}
+- Кастомные веб-шрифты: ${inspection.signals.fonts.length > 0 ? inspection.signals.fonts.join(', ') : 'Только системные/не найдены'}
+- Современные фичи вёрстки/медиа: ${inspection.signals.layoutFeatures.length > 0 ? inspection.signals.layoutFeatures.join(', ') : 'Не обнаружены'}
+- Найденные виджеты/конверсия: ${inspection.signals.widgets.length > 0 ? inspection.signals.widgets.join(', ') : 'Не найдены'}
+- Зафиксированные проблемы кода/дизайна: ${inspection.signals.redFlags.length > 0 ? inspection.signals.redFlags.join('; ') : 'Критичных устаревших паттернов не обнаружено'}
+- Объективный технический индекс (1-10): ${inspection.signals.modernIndex}/10
+- Title: ${inspection.title || '—'}
+- Заголовки H1-H3: ${inspection.headings.join(' | ') || '—'}
+- Фрагмент текста страницы:\n${inspection.textSnippet || '—'}\n`
+    : '';
 
+  const prompt = `Ты — ведущий арт-директор, UX-аудитор и техлид веб-студии. Твоя главная задача — ТОЧНО отличать действительно премиальные и современные сайты от устаревших, шаблонных или слабых сайтов.
+
+Проанализируй бизнес и его сайт:
 Название: ${lead.name}
 Категория: ${lead.category}
 Адрес / город: ${lead.address || 'не указан'}
 Текущий сайт: ${lead.websiteUrl || 'не указан на карте'}
 Google Карты: ${lead.googleMapsUrl || 'не указан'}
-
-Что нужно сделать:
+${signalsBlock}
+Строгие правила калибровки оценки (НЕ занижай хорошие сайты!):
 1. ${
-    hasUrl
-      ? `Открой и проанализируй сайт ${lead.websiteUrl} через urlContext.`
-      : `Выполни поиск в googleSearch, есть ли у компании "${lead.name}" (${lead.address || ''}) официальный сайт или только соцсети/справочники.`
+    hasRealWebsite
+      ? 'Опирайся на реальные технические/визуальные сигналы и контент страницы выше.'
+      : hasUrl
+        ? `У бизнеса указана не полноценная веб-платформа, а соцсеть/справочник (${lead.websiteUrl}). Проверь через поиск, есть ли полноценный сайт.`
+        : `Выполни поиск в googleSearch, есть ли у компании "${lead.name}" (${lead.address || ''}) официальный сайт.`
   }
-2. Оцени, насколько сайт и его визуальный дизайн устарели или слабы с точки зрения веб-студии, которая продаёт новые современные сайты и приложения:
-   - Если у бизнеса старый, шаблонный, неадаптивный, перегруженный, визуально слабый сайт, сайт на простом конструкторе без конверсии (нет онлайн-записи, калькулятора, внятного оффера, слабый UI/типографика, устаревшая вёрстка, нет интеграции с мессенджерами) ИЛИ вместо полноценного сайта только Taplink/Instagram/страница в соцсети — ставь verdict: "hot_outdated" (оценки 1–6).
-   - Если у бизнеса вообще нет сайта — ставь verdict: "no_website" (websiteScore: 1, designScore: 1).
-   - Если у бизнеса действительно современный, дорогой, быстрый и сильный сайт с отличным дизайном и высокой конверсией (оценки 8–10) — ставь verdict: "modern_ok".
-3. Сформулируй конкретные слабые места сайта и дизайна (issues — 3–5 пунктов, опираясь на то, что реально есть на странице или чего не хватает для их ниши).
-4. Напиши конкретные идеи: ЧТО туда можно добавить или улучшить, чтобы клиент согласился заказать новый сайт / веб-приложение (pitchSuggestions — 3–5 конкретных фишек именно под их нишу: онлайн-запись, калькулятор цены, Telegram-бот заявок, портфолио до/после, личный кабинет, современный редизайн и т.д.).
-5. Напиши короткий, живой готовый оффер-сообщение владельцу бизнеса (salesPitch — 3–4 предложения на русском без канцелярита, с упоминанием конкретной проблемы их сайта и выгоды от нового сайта).
-6. Найди официальный Telegram (@username / t.me/...) и другие соцсети компании, если они реально упоминаются на сайте или в поиске (НЕ выдумывай!).
+2. ШКАЛА ВЕРДИКТОВ И ОЦЕНОК:
+   - "modern_ok" (оценки 8–10 — Премиальный / современный сайт): чистый актуальный сайт с HTTPS, адаптивом, современной CSS-вёрсткой (Grid/Flex/переменные), кастомной типографикой (Manrope, Outfit, Onest, Inter, Playfair и др.), качественными медиа (WebP/SVG/видео), современным стеком (Next.js/Webflow/Framer/Tilda Zero Block/качественный кастом) и понятным путём к заявке (формы/WhatsApp/Telegram).
+     ВАЖНО: Премиальные бренды и клиники часто сознательно делают минималистичный сайт без калькулятора цен и без Telegram-бота. НИКОГДА не ставь такому сайту "hot_outdated" и НЕ выдумывай "выглядит как шаблон 2010-х", если технические сигналы показывают современную вёрстку и шрифты!
+   - "modern_ok" (оценки 6–7 — Хороший рабочий сайт): крепкий, аккуратный, адаптивный сайт, где дизайн нормальный/современный, пусть и без сложных интерактивных фишек (может быть на аккуратном WordPress/Elementor/Tilda).
+   - "hot_outdated" (оценки 1–5 — Устаревший / слабый сайт): РЕАЛЬНО слабый, морально устаревший или кривой сайт (табличная вёрстка, старый Bootstrap 2/3, WPBakery, древний Bitrix/Joomla шаблон 2010-х, нет HTTPS, нет мобильного viewport, системные шрифты Arial/Times, перегруженная стена текста, битый/неработающий сайт, ИЛИ вместо сайта только Taplink/Instagram/2GIS).
+   - "no_website" (оценка 1/1): сайта нет вообще.
+3. ЗАПРЕТ НА ВЫДУМКИ: Не пиши «нет мобильной адаптации», «нет SSL» или «дизайн 2010-х», если сигналы выше прямо подтверждают обратное (HTTPS=Да, viewport=Да, CSS Grid, современные шрифты, high modernIndex). Указывай только реальные точки роста!
+4. Для "issues" (2–4 пункта): назови честные наблюдения (если сайт премиальный — точечные UX/конверсионные точки роста, не оскорбляя дизайн; если устаревший — реальные дефекты).
+5. Для "pitchSuggestions" (3–4 пункта): что можно предложить владельцу под их нишу (если сайт уже сильный — доработки автоматизации: CRM-запись, AI-ассистент/Telegram-бот, личный кабинет; если слабый — полноценный редизайн, структура, квиз, скорость, запись).
+6. Для "salesPitch" (3–4 живых предложения): уважительный оффер без шаблонных фраз, соответствующий реальному уровню их сайта.
+7. Найди официальный Telegram (@username / t.me/...) и соцсети компании, если реально встречаются (НЕ выдумывай).
 
-Верни СТРОГО валидный JSON-объект (без markdown вокруг, если возможно):
+Верни СТРОГО валидный JSON-объект:
 {
   "description": "понятное описание бизнеса на русском (2-3 предложения)",
   "websiteUrl": "найденный или текущий https URL сайта (или null)",
@@ -1036,17 +1441,17 @@ Google Карты: ${lead.googleMapsUrl || 'не указан'}
   "telegramUrl": "https://t.me/... или null",
   "socialLinks": ["https://..."],
   "verdict": "hot_outdated" | "no_website" | "modern_ok",
-  "verdictLabel": "короткий ярлык, например: Устаревший сайт и дизайн / Слабый дизайн / Нет сайта / Современный сайт",
+  "verdictLabel": "например: Премиальный современный сайт / Современный рабочий сайт / Устаревший сайт и дизайн / Слабый шаблонный сайт / Нет сайта",
   "websiteScore": число от 1 до 10,
   "designScore": число от 1 до 10,
-  "issues": ["проблема 1", "проблема 2", "проблема 3"],
-  "pitchSuggestions": ["что добавить 1", "что добавить 2", "что добавить 3"],
+  "issues": ["пункт 1", "пункт 2"],
+  "pitchSuggestions": ["идея 1", "идея 2", "идея 3"],
   "salesPitch": "готовый текст сообщения клиенту"
 }`;
 
   const response = await generateWithRetry(ai, {
     contents: prompt,
-    tools,
+    ...(tools.length > 0 ? { tools } : {}),
   });
 
   const groundingLinks = extractGroundingLinks(response);
@@ -1067,7 +1472,7 @@ Google Карты: ${lead.googleMapsUrl || 'не указан'}
 
   const resolvedWebsiteUrl = isSafeHttpUrl(parsed.websiteUrl)
     ? parsed.websiteUrl
-    : lead.websiteUrl;
+    : inspection?.signals.finalUrl || lead.websiteUrl;
 
   const hasWebsiteNow = isSafeHttpUrl(resolvedWebsiteUrl) && !isSocialOrDirectoryOnlyUrl(resolvedWebsiteUrl);
 
@@ -1078,12 +1483,68 @@ Google Карты: ${lead.googleMapsUrl || 'не указан'}
     verdict = 'no_website';
   }
 
-  const websiteScore = clampScore(parsed.websiteScore, verdict === 'no_website' ? 1 : verdict === 'modern_ok' ? 8 : 4);
-  const designScore = clampScore(parsed.designScore, verdict === 'no_website' ? 1 : verdict === 'modern_ok' ? 8 : 4);
+  let websiteScore = clampScore(
+    parsed.websiteScore,
+    verdict === 'no_website' ? 1 : verdict === 'modern_ok' ? 8 : 4
+  );
+  let designScore = clampScore(
+    parsed.designScore,
+    verdict === 'no_website' ? 1 : verdict === 'modern_ok' ? 8 : 4
+  );
 
-  // If scores are weak (<= 6) even if model wrote modern_ok, treat as hot_outdated
-  if (verdict === 'modern_ok' && (websiteScore <= 6 || designScore <= 6)) {
+  // Server-side calibration guardrail backed by real DOM/CSS/typography telemetry
+  if (!hasWebsiteNow && !hasRealWebsite) {
+    verdict = 'no_website';
+    websiteScore = 1;
+    designScore = 1;
+  } else if (inspection?.signals.reachable) {
+    const idx = inspection.signals.modernIndex;
+    const redFlagCount = inspection.signals.redFlags.length;
+
+    // Prevent false "hot_outdated" classification on verified modern/premium stacks
+    if (idx >= 8 && redFlagCount === 0) {
+      websiteScore = Math.max(websiteScore, 8);
+      designScore = Math.max(designScore, 7);
+      verdict = 'modern_ok';
+    } else if (idx >= 7 && redFlagCount === 0 && websiteScore <= 5 && designScore <= 5) {
+      websiteScore = Math.max(websiteScore, 7);
+      designScore = Math.max(designScore, 7);
+      verdict = 'modern_ok';
+    } else if (redFlagCount >= 2 || idx <= 4) {
+      websiteScore = Math.min(websiteScore, 5);
+      designScore = Math.min(designScore, 5);
+      verdict = 'hot_outdated';
+    }
+  }
+
+  // Keep verdict and numeric scores consistent
+  if (websiteScore <= 5 || designScore <= 5) {
+    if (verdict !== 'no_website') verdict = 'hot_outdated';
+  } else if (websiteScore >= 7 && designScore >= 7) {
+    verdict = 'modern_ok';
+  } else if (verdict === 'modern_ok' && (websiteScore <= 5 || designScore <= 5)) {
     verdict = 'hot_outdated';
+  }
+
+  const defaultVerdictLabel =
+    verdict === 'no_website'
+      ? 'Нет полноценного сайта'
+      : verdict === 'modern_ok'
+        ? websiteScore >= 8 && designScore >= 8
+          ? 'Премиальный современный сайт'
+          : 'Современный рабочий сайт'
+        : designScore <= 4 && websiteScore <= 4
+          ? 'Устаревший сайт и слабый дизайн'
+          : designScore <= 5
+            ? 'Слабый устаревший дизайн'
+            : 'Устаревший сайт';
+
+  // Override misleading verdictLabel if guardrail flipped verdict
+  let verdictLabel = parsed.verdictLabel?.trim() || defaultVerdictLabel;
+  if (verdict === 'modern_ok' && /устарев|слаб/i.test(verdictLabel)) {
+    verdictLabel = defaultVerdictLabel;
+  } else if (verdict === 'hot_outdated' && /премиальн|современ/i.test(verdictLabel)) {
+    verdictLabel = defaultVerdictLabel;
   }
 
   const issues = Array.isArray(parsed.issues)
@@ -1097,17 +1558,7 @@ Google Карты: ${lead.googleMapsUrl || 'не указан'}
 
   const audit: WebsiteAudit = {
     verdict,
-    verdictLabel:
-      parsed.verdictLabel?.trim() ||
-      (verdict === 'no_website'
-        ? 'Нет полноценного сайта'
-        : verdict === 'modern_ok'
-          ? 'Современный сайт'
-          : designScore <= 5 && websiteScore <= 5
-            ? 'Устаревший сайт и слабый дизайн'
-            : designScore <= 5
-              ? 'Слабый дизайн сайта'
-              : 'Устаревший сайт'),
+    verdictLabel,
     websiteScore,
     designScore,
     issues:
@@ -1115,26 +1566,43 @@ Google Карты: ${lead.googleMapsUrl || 'не указан'}
         ? issues
         : verdict === 'no_website'
           ? ['У компании отсутствует полноценный продающий сайт.']
-          : ['Недостаточно выраженные точки захвата заявок и визуальной иерархии.'],
+          : verdict === 'modern_ok'
+            ? ['Визуальная часть на хорошем уровне — основные точки роста лежат в автоматизации заявок и CRM.']
+            : ['Недостаточно выраженные точки захвата заявок и устаревшая визуальная иерархия.'],
     pitchSuggestions:
       pitchSuggestions.length > 0
         ? pitchSuggestions
-        : [
-            'Современный адаптивный редизайн с быстрым первым экраном и понятным оффером',
-            'Онлайн-запись или квиз-калькулятор стоимости с мгновенной отправкой заявки в Telegram',
-          ],
+        : verdict === 'modern_ok'
+          ? [
+              'Telegram-бот для мгновенной записи и автоматических напоминаний клиентам',
+              'Интеграция веб-аналитики и личного кабинета клиента поверх существующего сайта',
+            ]
+          : [
+              'Современный адаптивный редизайн с быстрым первым экраном и понятным оффером',
+              'Онлайн-запись или квиз-калькулятор стоимости с мгновенной отправкой заявки в Telegram',
+            ],
     salesPitch:
       parsed.salesPitch?.trim() ||
-      `Здравствуйте! Посмотрел ваш бизнес «${lead.name}» и текущий сайт — у вас сильная ниша, но сайт визуально устарел и не дожимает посетителей в заявку. Могу собрать современный быстрый сайт с удобной записью и привязкой к Telegram, чтобы вы получали больше клиентов прямо с карт и поиска.`,
+      (verdict === 'modern_ok'
+        ? `Здравствуйте! Посмотрел сайт «${lead.name}» — у вас сильный и аккуратный ресурс. Могу помочь усилить конверсию и разгрузить администраторов: подключить удобного Telegram-бота для записи и синхронизацию с CRM, чтобы клиенты бронировали визит в пару кликов.`
+        : `Здравствуйте! Посмотрел ваш бизнес «${lead.name}» и текущий сайт — у вас сильная ниша, но сайт визуально устарел и теряет часть заявок с мобильных устройств. Могу собрать современный быстрый сайт с удобной записью и привязкой к Telegram, чтобы вы получали больше клиентов прямо с карт и поиска.`),
+    techSignals: inspection?.signals,
     scannedAt: new Date().toISOString(),
   };
 
   const tg = normalizeTelegram(
-    parsed.telegramUrl || parsed.telegramHandle || lead.telegramUrl || lead.telegramHandle
+    parsed.telegramUrl ||
+      parsed.telegramHandle ||
+      inspection?.extractedTelegram?.telegramUrl ||
+      lead.telegramUrl ||
+      lead.telegramHandle
   );
-  const socialLinks = Array.isArray(parsed.socialLinks)
+  const parsedSocials = Array.isArray(parsed.socialLinks)
     ? parsed.socialLinks.filter((u): u is string => isSafeHttpUrl(u))
-    : lead.socialLinks;
+    : [];
+  const socialLinks = Array.from(
+    new Set([...lead.socialLinks, ...parsedSocials, ...(inspection?.extractedSocials ?? [])])
+  );
 
   const mergedSourceLinks = [...lead.sourceLinks];
   for (const gl of groundingLinks) {
@@ -1156,7 +1624,7 @@ Google Карты: ${lead.googleMapsUrl || 'не указан'}
     websiteUrl: resolvedWebsiteUrl,
     telegramHandle: tg.telegramHandle ?? lead.telegramHandle,
     telegramUrl: tg.telegramUrl ?? lead.telegramUrl,
-    socialLinks: Array.from(new Set([...lead.socialLinks, ...socialLinks])),
+    socialLinks,
     sourceLinks: mergedSourceLinks,
     audit,
     enriched: true,

@@ -8,6 +8,20 @@ export type AutopilotQualityFilter = 'weak_only' | 'weak_or_none' | 'all';
 
 export type AuditVerdict = 'hot_outdated' | 'no_website' | 'modern_ok' | 'unscanned';
 
+export interface SiteTechnicalSignals {
+  reachable: boolean;
+  botProtected?: boolean;
+  finalUrl?: string;
+  usesHttps: boolean;
+  hasViewportMeta: boolean;
+  stack: string[];
+  fonts: string[];
+  layoutFeatures: string[];
+  widgets: string[];
+  redFlags: string[];
+  modernIndex: number;
+}
+
 export interface WebsiteAudit {
   verdict: AuditVerdict;
   verdictLabel: string;
@@ -16,6 +30,7 @@ export interface WebsiteAudit {
   issues: string[];
   pitchSuggestions: string[];
   salesPitch: string;
+  techSignals?: SiteTechnicalSignals;
   scannedAt: string;
 }
 

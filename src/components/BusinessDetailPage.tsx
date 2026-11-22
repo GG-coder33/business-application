@@ -308,9 +308,68 @@ export function BusinessDetailPage({
 
             {audit && (
               <>
+                {audit.techSignals && (
+                  <div className="border-t border-slate-100 pt-4 space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h3 className="text-xs font-semibold text-slate-900">
+                        Технические и визуальные сигналы сайта
+                      </h3>
+                      <span className="text-xs font-mono text-slate-600 tabular-nums">
+                        Технический индекс: {audit.techSignals.modernIndex}/10
+                      </span>
+                    </div>
+                    {audit.techSignals.botProtected ? (
+                      <p className="text-xs text-slate-600">
+                        Прямой HTML-парсинг ограничен защитой от ботов (Cloudflare / WAF) — оценка проведена через поиск и внешний контекст.
+                      </p>
+                    ) : (
+                      <div className="text-xs text-slate-600 flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className={audit.techSignals.usesHttps ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+                          {audit.techSignals.usesHttps ? 'HTTPS' : 'HTTP без SSL'}
+                        </span>
+                        <span aria-hidden="true">·</span>
+                        <span className={audit.techSignals.hasViewportMeta ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+                          {audit.techSignals.hasViewportMeta ? 'Мобильный адаптив' : 'Нет viewport'}
+                        </span>
+                      {audit.techSignals.stack.length > 0 && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>Стек: {audit.techSignals.stack.join(', ')}</span>
+                        </>
+                      )}
+                      {audit.techSignals.fonts.length > 0 && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>Шрифты: {audit.techSignals.fonts.join(', ')}</span>
+                        </>
+                      )}
+                      {audit.techSignals.layoutFeatures.length > 0 && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>Вёрстка/медиа: {audit.techSignals.layoutFeatures.join(', ')}</span>
+                        </>
+                      )}
+                      {audit.techSignals.widgets.length > 0 && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span>Конверсия: {audit.techSignals.widgets.join(', ')}</span>
+                        </>
+                      )}
+                      </div>
+                    )}
+                    {audit.techSignals.redFlags.length > 0 && (
+                      <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1.5">
+                        Зафиксированные минусы: {audit.techSignals.redFlags.join(' · ')}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="border-t border-slate-100 pt-4">
                   <h3 className="text-xs font-semibold text-slate-900 mb-2">
-                    Что слабо на текущем сайте и в дизайне
+                    {audit.verdict === 'modern_ok'
+                      ? 'Наблюдения и точки усиления сайта'
+                      : 'Что слабо на текущем сайте и в дизайне'}
                   </h3>
                   <ul className="space-y-1.5 text-sm text-slate-700 list-disc list-inside">
                     {audit.issues.map((issue, idx) => (
