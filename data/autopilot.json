@@ -11,12 +11,13 @@
     "Стамбул",
     "Белград",
     "Алматы",
-    "Вена"
+    "Вена",
+    "Остин"
   ],
   "isRunning": false,
-  "nextRunAt": "2026-11-22T19:37:24.323Z",
-  "lastRunAt": "2026-11-22T19:32:24.323Z",
-  "lastCity": "Вена",
+  "nextRunAt": "2026-11-22T19:42:24.430Z",
+  "lastRunAt": "2026-11-22T19:37:24.430Z",
+  "lastCity": "Остин",
   "lastNiche": "кофейни",
   "lastAddedCount": 0,
   "lastScannedCount": 0
