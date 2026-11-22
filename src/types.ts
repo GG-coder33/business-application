@@ -20,6 +20,8 @@ export interface SiteTechnicalSignals {
   widgets: string[];
   redFlags: string[];
   modernIndex: number;
+  parkedDomain?: boolean;
+  generator?: string;
 }
 
 export interface WebsiteAudit {
