@@ -68,6 +68,7 @@ export interface BusinessLead {
   description: string;
   openingHours?: string[];
   sourceLinks: GroundedLink[];
+  techSignals?: SiteTechnicalSignals;
   audit?: WebsiteAudit;
   enriched: boolean;
   isFavorite?: boolean;

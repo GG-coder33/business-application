@@ -178,8 +178,9 @@ export function InboxPage({
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const regionScopedLeads = useMemo(() => {
-    if (!onlyActiveRegion || autopilot.region === 'world') return leads;
-    return leads.filter((lead) =>
+    const feedLeads = leads.filter((lead) => lead.audit?.verdict !== 'modern_ok');
+    if (!onlyActiveRegion || autopilot.region === 'world') return feedLeads;
+    return feedLeads.filter((lead) =>
       leadMatchesRegionProfile(lead, autopilot.region, autopilot.customCities)
     );
   }, [leads, onlyActiveRegion, autopilot.region, autopilot.customCities]);
@@ -267,12 +268,16 @@ export function InboxPage({
     }
     const loc = res.city ? ` (${res.city}${res.niche ? ` · ${res.niche}` : ''})` : '';
     if ((res.addedCount ?? 0) > 0) {
-      setToastMsg(`Лента обновлена: добавлено ${res.addedCount} новых бизнесов${loc}.`);
+      setToastMsg(
+        res.error
+          ? `Добавлено ${res.addedCount} компаний${loc}. ${res.error}`
+          : `Лента обновлена: добавлено ${res.addedCount} новых бизнесов${loc}.`
+      );
     } else if (res.error) {
       setToastMsg(res.error);
     } else if ((res.scannedCount ?? 0) > 0) {
       setToastMsg(
-        `Проверено ${res.scannedCount} новых компаний${loc} — у всех уже современные сайты. Нажмите «Обновить ленту» ещё раз для поиска в следующем городе.`
+        `Проверено ${res.scannedCount} новых компаний${loc} — у всех уже хорошие современные сайты. Нажмите «Обновить ленту» ещё раз для поиска в следующем городе.`
       );
     } else {
       setToastMsg(`Новых компаний по текущему фильтру${loc} не нашлось — нажмите ещё раз для следующего города.`);
@@ -358,7 +363,6 @@ export function InboxPage({
               >
                 <option value="weak_only">Только слабый / старый сайт</option>
                 <option value="weak_or_none">Слабый сайт или без сайта</option>
-                <option value="all">Показывать все сайты</option>
               </select>
 
               <div
@@ -679,7 +683,7 @@ export function InboxPage({
 
                           {/* Unboxed Audit & Source Metadata */}
                           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500 tabular-nums">
-                            {audit && (
+                            {audit ? (
                               <>
                                 <span className={verdictColor}>{audit.verdictLabel}</span>
                                 <span aria-hidden="true">·</span>
@@ -688,7 +692,18 @@ export function InboxPage({
                                 </span>
                                 <span aria-hidden="true">·</span>
                               </>
-                            )}
+                            ) : lead.techSignals ? (
+                              <>
+                                <span className="text-amber-700 font-medium">
+                                  {lead.techSignals.reachable
+                                    ? `Тех. индекс ${lead.techSignals.modernIndex}/10`
+                                    : lead.techSignals.botProtected
+                                      ? 'Защита от ботов'
+                                      : 'Сайт не отвечает'}
+                                </span>
+                                <span aria-hidden="true">·</span>
+                              </>
+                            ) : null}
                             {lead.discoveredBy === 'autopilot' && (
                               <>
                                 <span className="text-blue-700 font-medium">Прислал ИИ</span>
@@ -725,14 +740,18 @@ export function InboxPage({
                             )}
                           </div>
 
-                          {/* Teaser of what to upgrade so client agrees */}
-                          {audit && (audit.pitchSuggestions[0] || audit.issues[0]) && (
+                          {/* Teaser of what to upgrade or factual red flags */}
+                          {audit && (audit.pitchSuggestions[0] || audit.issues[0]) ? (
                             <p className="text-xs text-slate-600 line-clamp-1">
                               {audit.pitchSuggestions[0]
                                 ? `Что предложить: ${audit.pitchSuggestions[0]}`
                                 : `Проблема: ${audit.issues[0]}`}
                             </p>
-                          )}
+                          ) : lead.techSignals && lead.techSignals.redFlags.length > 0 ? (
+                            <p className="text-xs text-amber-800 line-clamp-1">
+                              Признаки слабого сайта: {lead.techSignals.redFlags.join(' · ')}
+                            </p>
+                          ) : null}
                         </div>
 
                         {/* Row Actions */}

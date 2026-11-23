@@ -312,18 +312,28 @@ export default function App() {
     }
   };
 
-  const handleAudit = async (id: string): Promise<{ ok: boolean; error?: string }> => {
+  const handleAudit = async (
+    id: string
+  ): Promise<{ ok: boolean; error?: string; removedFromFeed?: boolean }> => {
     try {
       const res = await fetch(`/api/businesses/${encodeURIComponent(id)}/audit`, {
         method: 'POST',
       });
-      const data = (await res.json()) as { lead?: BusinessLead; error?: string };
+      const data = (await res.json()) as {
+        lead?: BusinessLead;
+        removedFromFeed?: boolean;
+        error?: string;
+      };
       if (!res.ok || !data.lead) {
         return { ok: false, error: data.error || 'Ошибка аудита.' };
       }
-      setLeads((prev) => prev.map((l) => (l.id === id ? data.lead! : l)));
+      if (data.removedFromFeed) {
+        setLeads((prev) => prev.filter((l) => l.id !== id));
+      } else {
+        setLeads((prev) => prev.map((l) => (l.id === id ? data.lead! : l)));
+      }
       setDirectLead(data.lead);
-      return { ok: true };
+      return { ok: true, removedFromFeed: Boolean(data.removedFromFeed) };
     } catch {
       return { ok: false, error: 'Ошибка сети при сканировании сайта.' };
     }
@@ -363,7 +373,10 @@ export default function App() {
       const res = await fetch(`/api/businesses/${encodeURIComponent(id)}/favorite`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isFavorite: nextFavorite }),
+        body: JSON.stringify({
+          isFavorite: nextFavorite,
+          ...(nextFavorite && target ? { lead: target } : {}),
+        }),
       });
       if (res.ok) {
         const data = (await res.json()) as { lead?: BusinessLead; leads?: BusinessLead[] };

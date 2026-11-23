@@ -9,13 +9,16 @@
   "visitedCities": [
     "Лиссабон",
     "Стамбул",
-    "Белград"
+    "Белград",
+    "Душанбе",
+    "Лондон"
   ],
-  "isRunning": true,
-  "nextRunAt": "2026-11-22T12:35:48.608Z",
-  "lastRunAt": "2026-11-22T12:30:48.608Z",
-  "lastCity": "Белград",
+  "isRunning": false,
+  "nextRunAt": "2026-11-23T16:26:15.050Z",
+  "lastRunAt": "2026-11-23T16:21:15.050Z",
+  "lastCity": "Лондон",
   "lastNiche": "автосервисы",
-  "lastAddedCount": 0,
-  "lastScannedCount": 5
+  "lastAddedCount": 2,
+  "lastScannedCount": 2,
+  "lastError": "Найдено 2 компаний с признаками слабого сайта, но ИИ-аудит Gemini сейчас перегружен (503) — карточки добавлены в ленту, проверьте их чуть позже."
 }

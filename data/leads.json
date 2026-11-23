@@ -1,5 +1,129 @@
 [
   {
+    "id": "biz_6b36adc593",
+    "name": "Highview Garage",
+    "category": "Ремонт и обслуживание автомобилей",
+    "query": "автосервисы Лондон Великобритания",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лондон",
+    "region": "world",
+    "countryCode": "GB",
+    "countryName": "Великобритания",
+    "placeId": "ChIJmZ5o33YZdkgRxnBsChhS8BQ",
+    "address": "Coppetts Centre, N Circular Rd., London N12 0AJ",
+    "lat": 51.6067999,
+    "lng": -0.1564759,
+    "rating": 4.8,
+    "userRatingCount": 1061,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+44 20 8361 6123",
+    "websiteUrl": "http://www.highviewgarage.co.uk/",
+    "googleMapsUrl": "https://maps.google.com/?cid=1508796138376687814&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Reliable auto repair shop offering expert diagnostics and professional vehicle maintenance.",
+    "openingHours": [
+      "понедельник: 08:30—18:00",
+      "вторник: 08:30—18:00",
+      "среда: 08:30—18:00",
+      "четверг: 08:30—18:00",
+      "пятница: 08:30—18:00",
+      "суббота: 08:30—14:00",
+      "воскресенье: Закрыто"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Highview Garage на Google Картах",
+        "url": "https://maps.google.com/?cid=1508796138376687814&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "http://www.highviewgarage.co.uk/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-23T16:20:57.753Z",
+    "techSignals": {
+      "reachable": false,
+      "botProtected": false,
+      "finalUrl": "http://www.highviewgarage.co.uk/",
+      "usesHttps": false,
+      "hasViewportMeta": false,
+      "stack": [],
+      "fonts": [],
+      "layoutFeatures": [],
+      "widgets": [],
+      "redFlags": [
+        "Сайт не отвечает или блокирует загрузку (The operation was aborted due to timeout)"
+      ],
+      "modernIndex": 3
+    }
+  },
+  {
+    "id": "biz_c42aaf370b",
+    "name": "Acton Service Centre",
+    "category": "Ремонт и обслуживание автомобилей",
+    "query": "автосервисы Лондон Великобритания",
+    "origin": "maps",
+    "discoveredBy": "autopilot",
+    "autoPickedCity": "Лондон",
+    "region": "world",
+    "countryCode": "GB",
+    "countryName": "Великобритания",
+    "placeId": "ChIJlTCAguINdkgRRQU4INsOuZQ",
+    "address": "17-18 The Broadway, Gunnersbury Ln, London W3 8HR",
+    "lat": 51.502092999999995,
+    "lng": -0.2820888,
+    "rating": 4.7,
+    "userRatingCount": 421,
+    "businessStatus": "OPERATIONAL",
+    "phone": "+44 20 8992 2323",
+    "websiteUrl": "https://www.actonservicecentre.co.uk/",
+    "googleMapsUrl": "https://maps.google.com/?cid=10716613122605974853&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+    "socialLinks": [],
+    "description": "Reliable auto repair garage offering efficient MOTs and comprehensive vehicle maintenance.",
+    "openingHours": [
+      "понедельник: 08:30—17:30",
+      "вторник: 08:30—17:30",
+      "среда: 08:30—17:30",
+      "четверг: 08:30—17:30",
+      "пятница: 08:30—17:30",
+      "суббота: 08:30—15:00",
+      "воскресенье: Закрыто"
+    ],
+    "sourceLinks": [
+      {
+        "title": "Acton Service Centre на Google Картах",
+        "url": "https://maps.google.com/?cid=10716613122605974853&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "kind": "maps"
+      },
+      {
+        "title": "Официальный сайт",
+        "url": "https://www.actonservicecentre.co.uk/",
+        "kind": "web"
+      }
+    ],
+    "enriched": false,
+    "createdAt": "2026-11-23T16:20:57.753Z",
+    "techSignals": {
+      "reachable": false,
+      "botProtected": false,
+      "finalUrl": "https://www.actonservicecentre.co.uk/",
+      "usesHttps": true,
+      "hasViewportMeta": false,
+      "stack": [],
+      "fonts": [],
+      "layoutFeatures": [],
+      "widgets": [],
+      "redFlags": [
+        "Сайт не отвечает или блокирует загрузку (fetch failed)"
+      ],
+      "modernIndex": 3
+    }
+  },
+  {
     "id": "biz_76c48cd851",
     "name": "Studio Laas • Interior Architecture & Design practice based in Berlin & Warsaw. Founded in 2015 by Malgorzata Czajkowska",
     "category": "Генеральный подрядчик",
@@ -67,383 +191,6 @@
       ],
       "salesPitch": "Малгожата, добрый день! Заглянул на ваш сайт — у вас отличные работы, но текущий дизайн сайта совсем не передает эстетику и премиальность Studio Laas. Сейчас клиенты в первую очередь выбирают глазами через удобный интерфейс. Мы специализируемся на сайтах для дизайн-студий и можем переупаковать ваше портфолио в современный диджитал-продукт с автоматической записью на консультации, что сразу повысит конверсию из посетителя в заказчика. Было бы интересно обсудить, как обновить сайт, чтобы он начал приносить заявки на автомате?",
       "scannedAt": "2026-11-22T13:07:53.527Z"
-    }
-  },
-  {
-    "id": "biz_837896a812",
-    "name": "3Danilova",
-    "category": "Генеральный подрядчик",
-    "query": "дизайн-студии Варшава Польша",
-    "origin": "maps",
-    "discoveredBy": "autopilot",
-    "autoPickedCity": "Варшава",
-    "region": "world",
-    "countryCode": "PL",
-    "countryName": "Польша",
-    "placeId": "ChIJ_0mdWA4zGUcRndQy9sijy8M",
-    "address": "Bokserska 64/lok.118, 02-690 Warszawa",
-    "lat": 52.171802799999995,
-    "lng": 20.990140699999998,
-    "rating": 5,
-    "userRatingCount": 30,
-    "businessStatus": "OPERATIONAL",
-    "phone": "+48 511 570 701",
-    "websiteUrl": "https://www.3danilova.com/",
-    "googleMapsUrl": "https://maps.google.com/?cid=14108550341187523741&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-    "telegramHandle": "@Warszawa_3Danilova",
-    "telegramUrl": "https://t.me/Warszawa_3Danilova",
-    "socialLinks": [
-      "https://www.instagram.com/3danilova/",
-      "https://www.facebook.com/3danilova/",
-      "https://www.youtube.com/@3danilova",
-      "https://www.behance.net/3danilova",
-      "https://youtube.com/@3Danilova",
-      "https://www.facebook.com/3Danilova/"
-    ],
-    "description": "Студия дизайна интерьера 3Danilova предоставляет услуги проектирования, визуализации и авторского сопровождения ремонта в Варшаве. Компания фокусируется на создании функциональных пространств и комплексной реализации проектов под ключ.",
-    "openingHours": [
-      "понедельник: 09:00—18:00",
-      "вторник: 09:00—18:00",
-      "среда: 09:00—18:00",
-      "четверг: 09:00—18:00",
-      "пятница: 09:00—18:00",
-      "суббота: Закрыто",
-      "воскресенье: Закрыто"
-    ],
-    "sourceLinks": [
-      {
-        "title": "Telegram @Warszawa_3Danilova",
-        "url": "https://t.me/Warszawa_3Danilova",
-        "kind": "telegram"
-      },
-      {
-        "title": "Telegram @danilova_design",
-        "url": "https://t.me/danilova_design",
-        "kind": "telegram"
-      },
-      {
-        "title": "3Danilova на Google Картах",
-        "url": "https://maps.google.com/?cid=14108550341187523741&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-        "kind": "maps"
-      },
-      {
-        "title": "Официальный сайт",
-        "url": "https://www.3danilova.com/",
-        "kind": "web"
-      }
-    ],
-    "enriched": true,
-    "createdAt": "2026-11-22T13:07:34.566Z",
-    "audit": {
-      "verdict": "modern_ok",
-      "verdictLabel": "Современный рабочий сайт",
-      "websiteScore": 8,
-      "designScore": 7,
-      "issues": [
-        "Технический парадокс: в CSS загружаются японские шрифты (Meiryo, Hiragino), что избыточно для польского рынка и может влиять на скорость отрисовки текста.",
-        "Навигация: меню реализовано через 'More' и элементы навигации Wix, что на мобильных устройствах может быть менее интуитивно, чем стандартный 'гамбургер'.",
-        "Отсутствие четких призывов к действию (CTA) в первом экране: пользователь видит приветствие, но путь к конверсии (например, кнопка 'Записаться на консультацию') требует скролла."
-      ],
-      "pitchSuggestions": [
-        "Внедрение CRM-интеграции (например, Pipedrive или AmoCRM) для автоматической обработки заявок с сайта, чтобы не терять лиды в почте.",
-        "Создание раздела с кейсами 'Было/Стало' с интерактивным ползунком (Before/After slider) для демонстрации экспертности в реализации.",
-        "Оптимизация типографики: замена системных японских шрифтов на современные веб-шрифты (например, Inter, Montserrat или Plus Jakarta Sans) для придания сайту более «европейского» и профессионального облика.",
-        "Настройка Telegram-бота или виджета обратной связи, который будет отправлять уведомления о новых заявках менеджеру в реальном времени."
-      ],
-      "salesPitch": "Анна, добрый день! Изучил ваш проект 3Danilova — у вас отличная база, сайт выглядит чисто и вызывает доверие. Как арт-директор, я вижу потенциал для усиления вашего позиционирования: мы можем докрутить UX-путь клиента и внедрить автоматизацию, чтобы заявки из Варшавы сразу попадали в вашу CRM. Предлагаю обсудить, как за счет точечных правок в дизайне и внедрения пары инструментов конверсии мы сможем увеличить количество входящих лидов из вашего портфолио. Вам было бы интересно узнать, как это оптимизирует процесс работы с клиентами?",
-      "techSignals": {
-        "reachable": true,
-        "finalUrl": "https://www.3danilova.com/",
-        "usesHttps": true,
-        "hasViewportMeta": true,
-        "stack": [
-          "Wix",
-          "Elementor"
-        ],
-        "fonts": [
-          "メイリオ",
-          "meiryo",
-          "ヒラギノ角ゴ pro w3",
-          "hiragino kaku gothic pro"
-        ],
-        "layoutFeatures": [
-          "CSS Grid",
-          "Flexbox",
-          "CSS-переменные",
-          "Адаптивная типографика clamp()",
-          "WebP/AVIF медиа",
-          "Видео-контент",
-          "Современные анимации/слайдеры",
-          "OpenGraph",
-          "Schema.org"
-        ],
-        "widgets": [
-          "Telegram",
-          "Клик-звонок tel:"
-        ],
-        "redFlags": [],
-        "modernIndex": 10
-      },
-      "scannedAt": "2026-11-22T13:13:10.006Z"
-    }
-  },
-  {
-    "id": "biz_8494cbf0b8",
-    "name": "Стоматология Алматы «Dental-Center»",
-    "category": "Стоматологическая клиника",
-    "query": "стоматологии Алматы Казахстан",
-    "origin": "maps",
-    "discoveredBy": "manual",
-    "region": "cis",
-    "countryCode": "KZ",
-    "countryName": "Казахстан",
-    "placeId": "ChIJe5hm_bZvgzgRsg-TvnzE3GQ",
-    "address": "ул. Каныша Сатпаева 133/6, Алматы 500004, Казахстан",
-    "lat": 43.2336361,
-    "lng": 76.8743437,
-    "rating": 5,
-    "userRatingCount": 67,
-    "businessStatus": "OPERATIONAL",
-    "phone": "+7 747 093 8986",
-    "websiteUrl": "https://dental-center.kz/",
-    "googleMapsUrl": "https://maps.google.com/?cid=7267899938721435570&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-    "socialLinks": [],
-    "description": "Dental-Center — это стоматологическая клиника полного цикла в Алматы, работающая с 1995 года. Клиника специализируется на имплантации, ортодонтии, лечении под микроскопом и эстетическом протезировании, предлагая пациентам современный сервис с фотопротоколом и прозрачным планированием лечения.",
-    "openingHours": [
-      "понедельник: 09:00—20:00",
-      "вторник: 09:00—20:00",
-      "среда: 09:00—20:00",
-      "четверг: 09:00—20:00",
-      "пятница: 09:00—20:00",
-      "суббота: 09:00—20:00",
-      "воскресенье: 09:00—20:00"
-    ],
-    "sourceLinks": [
-      {
-        "title": "Стоматология Алматы «Dental-Center» на Google Картах",
-        "url": "https://maps.google.com/?cid=7267899938721435570&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-        "kind": "maps"
-      },
-      {
-        "title": "Официальный сайт",
-        "url": "https://dental-center.kz/",
-        "kind": "web"
-      }
-    ],
-    "enriched": true,
-    "createdAt": "2026-11-22T12:57:57.537Z",
-    "audit": {
-      "verdict": "modern_ok",
-      "verdictLabel": "Современный, проработанный сайт",
-      "websiteScore": 9,
-      "designScore": 9,
-      "issues": [
-        "Отсутствие прямой интеграции с Telegram-ботом для записи (основной акцент сделан только на WhatsApp).",
-        "Нет полноценного личного кабинета пациента для отслеживания истории лечения, планов и снимков в режиме онлайн.",
-        "Недостаточная визуализация 'цифровой экосистемы' клиники — можно усилить интерактивность сайта для демонстрации инноваций."
-      ],
-      "pitchSuggestions": [
-        "Разработка полноценного личного кабинета пациента: интеграция рентген-снимков, планов лечения и истории визитов.",
-        "Внедрение Telegram-бота для автоматического подтверждения записей, напоминаний о приеме и сбора обратной связи.",
-        "Интеграция системы онлайн-бронирования слотов к конкретным врачам с синхронизацией в CRM клиники."
-      ],
-      "salesPitch": "Добрый день! У вас отличный сайт — видно, что вкладываетесь в контент и экспертность. Чтобы кратно увеличить конверсию и снизить нагрузку на администраторов, предлагаю доработать сайт до полноценного веб-сервиса с личным кабинетом пациента и Telegram-ботом для автоматизации записи. Это не только повысит лояльность, но и позволит пациентам получать планы лечения и снимки в пару кликов. Готов обсудить, как мы можем усилить вашу цифровую инфраструктуру.",
-      "scannedAt": "2026-11-22T12:58:06.767Z"
-    }
-  },
-  {
-    "id": "biz_ce7a3bc638",
-    "name": "Eurodent",
-    "category": "Стоматологическая клиника",
-    "query": "стоматологии Алматы Казахстан",
-    "origin": "maps",
-    "discoveredBy": "manual",
-    "region": "cis",
-    "countryCode": "KZ",
-    "countryName": "Казахстан",
-    "placeId": "ChIJtd8iqr1ugzgRbM2atWF-AMg",
-    "address": "улица Желтоксан 83, Алматы 050000, Казахстан",
-    "lat": 43.257963,
-    "lng": 76.93875899999999,
-    "rating": 4.6,
-    "userRatingCount": 301,
-    "businessStatus": "OPERATIONAL",
-    "phone": "+7 707 746 6404",
-    "websiteUrl": "https://eurodent.kz/",
-    "googleMapsUrl": "https://maps.google.com/?cid=14411657765709335916&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-    "socialLinks": [
-      "https://www.instagram.com/eurodent.kz/",
-      "https://www.facebook.com/eurodent.almaty/",
-      "https://vk.com/eurodent.clinic",
-      "https://www.instagram.com/eurodentkz/"
-    ],
-    "description": "Eurodent — крупная сеть стоматологических клиник в Алматы с 25-летним опытом работы. Клиника предоставляет полный спектр стоматологических услуг, от базовой терапии до сложной цифровой имплантации и исправления прикуса.",
-    "openingHours": [
-      "понедельник: 10:00—20:00",
-      "вторник: 10:00—20:00",
-      "среда: 10:00—20:00",
-      "четверг: 10:00—20:00",
-      "пятница: 10:00—20:00",
-      "суббота: 10:00—20:00",
-      "воскресенье: 10:00—20:00"
-    ],
-    "sourceLinks": [
-      {
-        "title": "Eurodent на Google Картах",
-        "url": "https://maps.google.com/?cid=14411657765709335916&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-        "kind": "maps"
-      },
-      {
-        "title": "Официальный сайт",
-        "url": "https://eurodent.kz/",
-        "kind": "web"
-      }
-    ],
-    "enriched": true,
-    "createdAt": "2026-11-22T12:57:57.537Z",
-    "audit": {
-      "verdict": "modern_ok",
-      "verdictLabel": "Премиальный современный сайт",
-      "websiteScore": 10,
-      "designScore": 9,
-      "issues": [
-        "Перегруженность навигационного меню: избыток категорий услуг может затруднять быстрый поиск конкретной процедуры на мобильных устройствах.",
-        "Отсутствие блока социального доказательства (видео-отзывы или фото «до/после» в карусели) на первом экране снижает эмоциональное доверие.",
-        "Отсутствие сквозной интеграции с CRM для автоматизированного бронирования слотов в реальном времени (вместо заявки на обратный звонок)."
-      ],
-      "pitchSuggestions": [
-        "Внедрение AI-ассистента в Telegram/WhatsApp, который автоматически консультирует по ценам и записывает пациентов на прием 24/7.",
-        "Создание раздела 'Кейсы' с интерактивными сравнениями 'до/после', что критически важно для принятия решения в сфере имплантации и эстетики.",
-        "Настройка системы личного кабинета пациента для просмотра истории посещений, рентгеновских снимков и графиков оплат.",
-        "Оптимизация контентной стратегии: внедрение персонализированных посадочных страниц под высокочастотные запросы (например, 'Имплантация All-on-4 в Алматы') для повышения конверсии в запись."
-      ],
-      "salesPitch": "Здравствуйте! Ваш сайт Eurodent производит отличное впечатление — видно, что вы уделили много внимания современной вёрстке и технической части. Как эксперты, мы видим, что площадка готова к масштабированию конверсии. Предлагаем обсудить внедрение системы автоматизированной записи через AI-ассистента, чтобы разгрузить администраторов и обеспечить запись пациентов 24/7. Было бы вам интересно посмотреть, как такие решения повышают средний чек в стоматологии?",
-      "techSignals": {
-        "reachable": true,
-        "finalUrl": "https://eurodent.kz/",
-        "usesHttps": true,
-        "hasViewportMeta": true,
-        "stack": [],
-        "fonts": [
-          "Outfit",
-          "Manrope"
-        ],
-        "layoutFeatures": [
-          "CSS Grid",
-          "Flexbox",
-          "CSS-переменные",
-          "Адаптивная типографика clamp()",
-          "WebP/AVIF медиа",
-          "170 SVG-иконок",
-          "Современные анимации/слайдеры",
-          "Schema.org"
-        ],
-        "widgets": [
-          "WhatsApp",
-          "Клик-звонок tel:"
-        ],
-        "redFlags": [],
-        "modernIndex": 10
-      },
-      "scannedAt": "2026-11-22T13:12:55.199Z"
-    }
-  },
-  {
-    "id": "biz_2f540c5824",
-    "name": "Стоматология \"Demokrat\" в Коктем",
-    "category": "Стоматологическая клиника",
-    "query": "стоматологии Алматы Казахстан",
-    "origin": "maps",
-    "discoveredBy": "manual",
-    "region": "cis",
-    "countryCode": "KZ",
-    "countryName": "Казахстан",
-    "placeId": "ChIJJT6K5ihvgzgRoOWGrEIngS8",
-    "address": "Central Esentai Residence, жилой комплекс Коктем 3-й микрорайон, 24, корпус D, Алматы 050040, Казахстан",
-    "lat": 43.2347189,
-    "lng": 76.91994629999999,
-    "rating": 4.9,
-    "userRatingCount": 228,
-    "businessStatus": "OPERATIONAL",
-    "phone": "+7 707 283 7031",
-    "websiteUrl": "http://demokrat-almaty.kz/",
-    "googleMapsUrl": "https://maps.google.com/?cid=3423060359094134176&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-    "socialLinks": [
-      "https://www.instagram.com/demokrat_almaty/",
-      "https://www.facebook.com/demokratalmaty/"
-    ],
-    "description": "Стоматологическая клиника Demokrat — современный медицинский центр в Алматы, специализирующийся на сложном протезировании, имплантации по протоколу All-on-4 и эстетической стоматологии. Клиника делает упор на высокие технологии, включая лечение под микроскопом, и предоставляет гибкие финансовые условия для пациентов.",
-    "openingHours": [
-      "понедельник: 09:00—19:00",
-      "вторник: 09:00—19:00",
-      "среда: 09:00—19:00",
-      "четверг: 09:00—19:00",
-      "пятница: 09:00—19:00",
-      "суббота: 09:00—19:00",
-      "воскресенье: 09:00—19:00"
-    ],
-    "sourceLinks": [
-      {
-        "title": "Стоматология \"Demokrat\" в Коктем на Google Картах",
-        "url": "https://maps.google.com/?cid=3423060359094134176&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
-        "kind": "maps"
-      },
-      {
-        "title": "Официальный сайт",
-        "url": "http://demokrat-almaty.kz/",
-        "kind": "web"
-      }
-    ],
-    "enriched": true,
-    "createdAt": "2026-11-22T12:57:57.537Z",
-    "audit": {
-      "verdict": "modern_ok",
-      "verdictLabel": "Современный рабочий сайт",
-      "websiteScore": 9,
-      "designScore": 8,
-      "issues": [
-        "Избыточность навигационного меню: дублирование списка специалистов и услуг в хэдере перегружает мобильную версию.",
-        "Типографика и акценты: использование шрифта 'Consolas' в качестве основного для текста выглядит нетипично для медицины и снижает читабельность (лучше использовать спокойные гротески).",
-        "Иерархия контента: страница перенасыщена кнопками призыва к действию (CTA), что создает 'визуальный шум' и размывает фокус внимания пользователя."
-      ],
-      "pitchSuggestions": [
-        "Внедрение сквозной аналитики и интеграция с CRM (например, AmoCRM или специализированной стоматологической системой) для автоматического трекинга лидов с сайта.",
-        "Разработка AI-ассистента в WhatsApp для квалификации пациентов: бот может уточнять характер проблемы до звонка администратора, повышая конверсию в запись.",
-        "Оптимизация скорости загрузки медиа-контента: переход на современные форматы изображений AVIF/WebP для ускорения LCP (Largest Contentful Paint) на мобильных устройствах.",
-        "Создание персонализированных лендингов под конкретные услуги (например, отдельно под 'Имплантацию'), чтобы не уводить пользователя в общее меню."
-      ],
-      "salesPitch": "Добрый день! Изучил ваш сайт — отличная техническая база и сильное УТП по рассрочкам и высоким технологиям. Вижу потенциал для кратного роста конверсии через донастройку CJM (пути пациента). Мы помогаем клиникам вашего уровня внедрять инструменты автоматизации, которые освобождают администраторов от рутины и увеличивают запись через WhatsApp. Было бы вам интересно обсудить, как можно оптимизировать путь пациента от первого клика до кресла врача?",
-      "techSignals": {
-        "reachable": true,
-        "finalUrl": "https://demokrat-almaty.kz/",
-        "usesHttps": true,
-        "hasViewportMeta": true,
-        "stack": [
-          "Webflow"
-        ],
-        "fonts": [
-          "Open Sans",
-          "Consolas",
-          "monaco",
-          "coresans"
-        ],
-        "layoutFeatures": [
-          "CSS Grid",
-          "Flexbox",
-          "CSS-переменные",
-          "Современные анимации/слайдеры"
-        ],
-        "widgets": [
-          "WhatsApp",
-          "Онлайн-запись",
-          "Квиз/калькулятор",
-          "Формы (5)",
-          "Клик-звонок tel:"
-        ],
-        "redFlags": [],
-        "modernIndex": 10
-      },
-      "scannedAt": "2026-11-22T13:11:44.556Z"
     }
   },
   {

@@ -29,7 +29,9 @@ export function AutopilotPanel({
   const [region, setRegion] = useState<AutopilotRegion>(config.region);
   const [customCities, setCustomCities] = useState(config.customCities);
   const [intervalMinutes, setIntervalMinutes] = useState(config.intervalMinutes);
-  const [qualityFilter, setQualityFilter] = useState<AutopilotQualityFilter>(config.qualityFilter);
+  const [qualityFilter, setQualityFilter] = useState<AutopilotQualityFilter>(
+    config.qualityFilter === 'all' ? 'weak_only' : config.qualityFilter
+  );
   const [saving, setSaving] = useState(false);
   const [countdown, setCountdown] = useState<string | null>(() =>
     formatCountdown(config.nextRunAt)
@@ -40,7 +42,7 @@ export function AutopilotPanel({
     setRegion(config.region);
     setCustomCities(config.customCities);
     setIntervalMinutes(config.intervalMinutes);
-    setQualityFilter(config.qualityFilter);
+    setQualityFilter(config.qualityFilter === 'all' ? 'weak_only' : config.qualityFilter);
   }, [
     config.niches,
     config.region,
@@ -150,7 +152,6 @@ export function AutopilotPanel({
           >
             <option value="weak_only">Только слабый / старый сайт</option>
             <option value="weak_or_none">Слабый сайт или без сайта</option>
-            <option value="all">Все (с аудитом дизайна)</option>
           </select>
         </div>
 

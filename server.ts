@@ -259,17 +259,24 @@ function parseGeminiJsonError(raw: string): { code?: number; status?: string; me
 function formatGeminiError(err: unknown): string {
   const raw = extractRawErrorMessage(err).trim();
   const parsed = parseGeminiJsonError(raw);
-  console.error('[Gemini API Error]', parsed ?? raw);
+  const summary = parsed?.message
+    ? `${parsed.code ?? ''} ${parsed.status ?? ''}: ${parsed.message.slice(0, 180)}`.trim()
+    : raw.slice(0, 200);
 
   if (isGeminiQuotaError(err)) {
+    console.warn(`[Gemini API] 429 rate-limit: ${summary}`);
     return 'Превышен лимит запросов к Gemini API (429 RESOURCE_EXHAUSTED). Подождите 30–60 секунд и повторите сканирование либо выберите API-ключ с биллингом в Settings > Secrets.';
   }
   if (isGeminiAuthError(err)) {
+    console.error(`[Gemini API] auth error: ${summary}`);
     return 'Ошибка доступа к Gemini API. Проверьте GEMINI_API_KEY в панели Settings > Secrets.';
   }
   if (isGeminiTransientError(err)) {
+    console.warn(`[Gemini API] transient 503/timeout: ${summary}`);
     return 'Сервер ИИ сейчас перегружен (503 UNAVAILABLE). Повторите попытку через 10–20 секунд.';
   }
+
+  console.error('[Gemini API] unexpected error:', summary);
   if (parsed?.message) {
     const codeTag = parsed.code ? ` (${parsed.code}${parsed.status ? ` ${parsed.status}` : ''})` : '';
     return `Ошибка Gemini API${codeTag}: ${parsed.message.slice(0, 220)}`;
@@ -305,9 +312,15 @@ async function generateWithRetry(
     tools?: Array<Record<string, unknown>>;
     responseMimeType?: string;
     preferLite?: boolean;
+    allowNoToolsFallback?: boolean;
   }
 ): Promise<GenerateContentResponse> {
   const hasMapsTool = Boolean(params.tools?.some((t) => 'googleMaps' in t));
+  const hasSearchTool = Boolean(params.tools?.some((t) => 'googleSearch' in t));
+  const hasUrlContext = Boolean(params.tools?.some((t) => 'urlContext' in t));
+  const allowNoToolsFallback =
+    params.allowNoToolsFallback ?? (!hasMapsTool && (hasSearchTool || hasUrlContext));
+
   const buildConfig = (
     model: 'gemini-4-hydrogen' | 'gemini-3.1-flash-lite',
     tools?: Array<Record<string, unknown>>
@@ -321,7 +334,7 @@ async function generateWithRetry(
     if (tools && tools.length > 0) {
       config.tools = tools;
     }
-    if (params.responseMimeType && !hasMapsTool) {
+    if (params.responseMimeType && !tools?.some((t) => 'googleMaps' in t)) {
       config.responseMimeType = params.responseMimeType;
     }
     return config as GenerateContentParameters['config'];
@@ -337,70 +350,71 @@ async function generateWithRetry(
         contents: params.contents,
         config: buildConfig(model, tools),
       }),
-      28000,
+      22000,
       `Gemini ${model}`
     );
 
   const primaryModel = params.preferLite ? 'gemini-3.1-flash-lite' : 'gemini-4-hydrogen';
 
+  let lastErr: unknown;
   try {
     return await callModel(primaryModel, params.tools);
   } catch (err1) {
-    if (!isRetryableGeminiError(err1)) {
+    lastErr = err1;
+    const msg1 = extractRawErrorMessage(err1);
+    const isInvalidToolArg = !isGeminiAuthError(err1) && /400|INVALID_ARGUMENT|urlContext/i.test(msg1);
+    if (!isRetryableGeminiError(err1) && !isInvalidToolArg) {
       throw err1;
     }
 
-    // If primary was gemini-4-hydrogen and hit 503/high-demand/timeout, switch immediately to gemini-3.1-flash-lite
-    if (primaryModel === 'gemini-4-hydrogen' && isGeminiTransientError(err1)) {
-      await sleep(600);
+    // Immediate cross-model fallback from gemini-4-hydrogen to gemini-3.1-flash-lite on BOTH 503 and 429
+    if (primaryModel === 'gemini-4-hydrogen') {
+      await sleep(isGeminiQuotaError(err1) ? 700 : 500);
       try {
         return await callModel('gemini-3.1-flash-lite', params.tools);
-      } catch (errLite1) {
-        const msgLite1 = extractRawErrorMessage(errLite1);
-        const hadUrlContext = Boolean(params.tools?.some((t) => 'urlContext' in t));
-        if (hadUrlContext && (/400|INVALID_ARGUMENT|urlContext/i.test(msgLite1) || isGeminiTransientError(errLite1))) {
-          await sleep(800);
-          return await callModel('gemini-3.1-flash-lite', [{ googleSearch: {} }]);
-        }
-        if (isRetryableGeminiError(errLite1)) {
-          await sleep(1400);
-          try {
-            return await callModel('gemini-3.1-flash-lite', params.tools);
-          } catch (errLite2) {
-            if (isGeminiTransientError(errLite2)) {
-              await sleep(2800);
-              return await callModel('gemini-3.1-flash-lite', params.tools);
-            }
-            throw errLite2;
-          }
-        }
-        throw errLite1;
+      } catch (errLite) {
+        lastErr = errLite;
       }
     }
 
-    // Backoff on 429 quota or flash-lite transient error
-    await sleep(isGeminiQuotaError(err1) ? 2500 : 1200);
-
-    try {
-      return await callModel(primaryModel, params.tools);
-    } catch (err2) {
-      if (!isRetryableGeminiError(err2) || primaryModel === 'gemini-3.1-flash-lite') {
-        throw err2;
-      }
-
-      // Fallback attempt on lighter gemini-3.1-flash-lite
-      await sleep(1200);
-      try {
-        return await callModel('gemini-3.1-flash-lite', params.tools);
-      } catch (err3) {
-        const msg3 = extractRawErrorMessage(err3);
-        const hadUrlContext = Boolean(params.tools?.some((t) => 'urlContext' in t));
-        if (hadUrlContext && /400|INVALID_ARGUMENT|urlContext/i.test(msg3)) {
-          return await callModel('gemini-3.1-flash-lite', [{ googleSearch: {} }]);
+    // If urlContext + googleSearch failed because of urlContext 400 or googleSearch 429, try narrowing tools on flash-lite
+    if (!hasMapsTool && hasUrlContext && hasSearchTool) {
+      const liteMsg = extractRawErrorMessage(lastErr);
+      const tryTools = isGeminiQuotaError(lastErr)
+        ? [{ urlContext: {} }]
+        : /400|INVALID_ARGUMENT|urlContext/i.test(liteMsg)
+          ? [{ googleSearch: {} }]
+          : null;
+      if (tryTools) {
+        await sleep(600);
+        try {
+          return await callModel('gemini-3.1-flash-lite', tryTools);
+        } catch (errNarrow) {
+          lastErr = errNarrow;
         }
-        throw err3;
       }
     }
+
+    // Drop search/url tools as a last resort when rich business metadata is already in prompt
+    if (allowNoToolsFallback && params.tools && params.tools.length > 0 && !isGeminiAuthError(lastErr)) {
+      await sleep(700);
+      try {
+        return await callModel('gemini-3.1-flash-lite', undefined);
+      } catch (errNoTools) {
+        lastErr = errNoTools;
+      }
+    }
+
+    // One final backoff retry on gemini-3.1-flash-lite if transient 503 persists
+    if (isGeminiTransientError(lastErr)) {
+      await sleep(1400);
+      return await callModel(
+        'gemini-3.1-flash-lite',
+        allowNoToolsFallback ? undefined : params.tools
+      );
+    }
+
+    throw lastErr;
   }
 }
 
@@ -923,6 +937,7 @@ async function searchTelegramViaGemini(
   const response = await generateWithRetry(ai, {
     contents: prompt,
     tools: [{ googleSearch: {} }],
+    allowNoToolsFallback: false,
   });
 
   const groundingLinks = extractGroundingLinks(response);
@@ -1253,7 +1268,10 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
     if (/<frameset|<marquee|<font\b/i.test(html)) {
       redFlags.push('Устаревшие HTML4-теги (<font>/<marquee>/<frameset>)');
     }
-    if (/jquery[.-]?1\.[0-9.]+/i.test(html)) {
+    const hasModernBuilder = stack.some((s) =>
+      ['Tilda (Zero Block)', 'Tilda', 'Webflow', 'Framer', 'Next.js', 'Nuxt', 'Shopify'].includes(s)
+    );
+    if (/jquery[.-]?1\.[0-9.]+/i.test(html) && !hasModernBuilder) {
       redFlags.push('Устаревший jQuery 1.x');
     }
     if (/col-xs-|navbar-default|panel-default/i.test(combinedCssAndHtml)) {
@@ -1355,6 +1373,97 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
   }
 }
 
+function isClearlyModernSite(signals?: SiteTechnicalSignals): boolean {
+  if (!signals) return false;
+  return Boolean(
+    signals.reachable &&
+      !signals.botProtected &&
+      ((signals.modernIndex >= 7 && signals.redFlags.length === 0) ||
+        (signals.modernIndex >= 8 && signals.redFlags.length <= 1))
+  );
+}
+
+interface CandidateInspectionPair {
+  lead: BusinessLead;
+  inspection?: DetailedSiteInspection;
+}
+
+async function preInspectCandidates(
+  candidates: BusinessLead[],
+  qualityFilter: AutopilotQualityFilter
+): Promise<{
+  selected: CandidateInspectionPair[];
+  skippedModernCount: number;
+}> {
+  const seenDomains = new Set<string>();
+  const deduped: BusinessLead[] = [];
+  for (const lead of candidates) {
+    if (isSafeHttpUrl(lead.websiteUrl) && !isSocialOrDirectoryOnlyUrl(lead.websiteUrl)) {
+      try {
+        const u = new URL(lead.websiteUrl);
+        const siteKey = `${u.hostname.replace(/^www\./, '').toLowerCase()}${u.pathname.replace(/\/+$/, '')}`;
+        if (seenDomains.has(siteKey)) continue;
+        seenDomains.add(siteKey);
+      } catch {
+        // ignore invalid URL
+      }
+    }
+    deduped.push(lead);
+  }
+  const capped = deduped.slice(0, 8);
+  const inspected = await Promise.all(
+    capped.map(async (lead): Promise<CandidateInspectionPair> => {
+      const hasUrl = isSafeHttpUrl(lead.websiteUrl);
+      const hasRealWebsite = hasUrl && !isSocialOrDirectoryOnlyUrl(lead.websiteUrl);
+      if (!hasRealWebsite || !lead.websiteUrl) {
+        return { lead };
+      }
+
+      const inspection = await inspectWebsiteSignals(lead.websiteUrl);
+      const tg = !lead.telegramUrl && inspection.extractedTelegram
+        ? inspection.extractedTelegram
+        : undefined;
+      const mergedSocials =
+        inspection.extractedSocials.length > 0
+          ? Array.from(new Set([...lead.socialLinks, ...inspection.extractedSocials]))
+          : lead.socialLinks;
+
+      return {
+        lead: {
+          ...lead,
+          techSignals: inspection.signals,
+          telegramHandle: lead.telegramHandle ?? tg?.telegramHandle,
+          telegramUrl: lead.telegramUrl ?? tg?.telegramUrl,
+          socialLinks: mergedSocials,
+        },
+        inspection,
+      };
+    })
+  );
+
+  let skippedModernCount = 0;
+  const filtered: CandidateInspectionPair[] = [];
+  for (const pair of inspected) {
+    if (qualityFilter !== 'all' && isClearlyModernSite(pair.inspection?.signals)) {
+      skippedModernCount += 1;
+      continue;
+    }
+    filtered.push(pair);
+  }
+
+  // Prioritize candidates with the weakest/red-flagged technical signals first
+  filtered.sort((a, b) => {
+    const scoreA = a.inspection?.signals.modernIndex ?? (isSafeHttpUrl(a.lead.websiteUrl) ? 5 : 2);
+    const scoreB = b.inspection?.signals.modernIndex ?? (isSafeHttpUrl(b.lead.websiteUrl) ? 5 : 2);
+    const flagsA = a.inspection?.signals.redFlags.length ?? 0;
+    const flagsB = b.inspection?.signals.redFlags.length ?? 0;
+    if (flagsB !== flagsA) return flagsB - flagsA;
+    return scoreA - scoreB;
+  });
+
+  return { selected: filtered, skippedModernCount };
+}
+
 /**
  * Combined AI Website & Design Auditor + Contact Enrichment.
  * Inspects live HTML/CSS/typography/widget telemetry first, then combines it
@@ -1362,14 +1471,17 @@ async function inspectWebsiteSignals(rawUrl: string): Promise<DetailedSiteInspec
  */
 async function auditAndEnrichLead(
   ai: GoogleGenAI,
-  lead: BusinessLead
+  lead: BusinessLead,
+  options?: { preferLite?: boolean; precomputedInspection?: DetailedSiteInspection }
 ): Promise<BusinessLead> {
   const hasUrl = isSafeHttpUrl(lead.websiteUrl);
   const hasRealWebsite = hasUrl && !isSocialOrDirectoryOnlyUrl(lead.websiteUrl);
 
-  const inspection = hasRealWebsite && lead.websiteUrl
-    ? await inspectWebsiteSignals(lead.websiteUrl)
-    : undefined;
+  const inspection =
+    options?.precomputedInspection ??
+    (hasRealWebsite && lead.websiteUrl
+      ? await inspectWebsiteSignals(lead.websiteUrl)
+      : undefined);
 
   const needUrlContext = Boolean(
     hasUrl && (!inspection || !inspection.signals.reachable || inspection.textLength < 400)
@@ -1377,7 +1489,7 @@ async function auditAndEnrichLead(
   const tools: Array<Record<string, unknown>> = hasUrl
     ? hasRealWebsite
       ? inspection?.signals.botProtected
-        ? [{ urlContext: {} }, { googleSearch: {} }]
+        ? [{ googleSearch: {} }]
         : needUrlContext
           ? [{ urlContext: {} }]
           : []
@@ -1452,6 +1564,8 @@ ${signalsBlock}
   const response = await generateWithRetry(ai, {
     contents: prompt,
     ...(tools.length > 0 ? { tools } : {}),
+    preferLite: options?.preferLite,
+    allowNoToolsFallback: true,
   });
 
   const groundingLinks = extractGroundingLinks(response);
@@ -1626,6 +1740,7 @@ ${signalsBlock}
     telegramUrl: tg.telegramUrl ?? lead.telegramUrl,
     socialLinks,
     sourceLinks: mergedSourceLinks,
+    techSignals: inspection?.signals ?? lead.techSignals,
     audit,
     enriched: true,
   };
@@ -1637,12 +1752,16 @@ function passesQualityFilter(
 ): boolean {
   if (qualityFilter === 'all') return true;
   const verdict = lead.audit?.verdict;
+  // Never keep confirmed good/modern sites in the lead feed
+  if (verdict === 'modern_ok') return false;
   if (qualityFilter === 'weak_only') {
-    // Only leads that HAVE a website (or social-only link masquerading as site) AND it's outdated/weak
-    return verdict === 'hot_outdated';
+    if (verdict) return verdict === 'hot_outdated';
+    // Unscanned fallback (only kept when AI is temporarily unavailable and site isn't modern)
+    return isSafeHttpUrl(lead.websiteUrl) && !isClearlyModernSite(lead.techSignals);
   }
   // 'weak_or_none'
-  return verdict === 'hot_outdated' || verdict === 'no_website' || !verdict;
+  if (verdict) return verdict === 'hot_outdated' || verdict === 'no_website';
+  return !isClearlyModernSite(lead.techSignals);
 }
 
 function getBaseAppUrl(req?: express.Request): string {
@@ -1805,7 +1924,9 @@ async function runAutopilotCycle(
       )
     );
 
-    let prioritized: BusinessLead[] = [];
+    let rawCandidates: BusinessLead[] = [];
+    let candidatePairs: CandidateInspectionPair[] = [];
+    let skippedModernCount = 0;
     let placesError: string | undefined;
     const triedCities = new Set<string>(config.visitedCities);
     const allowedCountries =
@@ -1813,7 +1934,7 @@ async function runAutopilotCycle(
         ? REGION_ALLOWED_COUNTRIES[config.region]
         : undefined;
 
-    // Try up to 2 cities if the first city has no fresh candidates
+    // Try up to 2 cities if the first city has no fresh weak-site candidates
     for (let attempt = 0; attempt < 2; attempt++) {
       const picked = pickNextCityAndNiche({
         ...config,
@@ -1826,7 +1947,7 @@ async function runAutopilotCycle(
         ? `${niche} ${picked.city} ${picked.country}`
         : `${niche} ${picked.city}`;
 
-      const placesResult = await searchPlacesApi(query, 8, {
+      const placesResult = await searchPlacesApi(query, 10, {
         discoveredBy: 'autopilot',
         autoPickedCity: city,
         region: config.region,
@@ -1841,7 +1962,7 @@ async function runAutopilotCycle(
         placesError = placesResult.error;
       }
 
-      let rawCandidates = placesResult.leads;
+      rawCandidates = placesResult.leads;
       if (
         rawCandidates.length === 0 &&
         placesResult.rawCount === 0 &&
@@ -1871,43 +1992,61 @@ async function runAutopilotCycle(
         return !existingKeys.has(key);
       });
 
-      prioritized =
+      const basePool =
         config.qualityFilter === 'weak_only'
           ? newCandidates.filter((l) => isSafeHttpUrl(l.websiteUrl))
           : newCandidates;
 
-      if (prioritized.length > 0) {
-        break;
-      }
-    }
-
-    const toAudit = prioritized.slice(0, 3);
-    scannedCount = toAudit.length;
-
-    const auditedLeads: BusinessLead[] = [];
-    if (ai && toAudit.length > 0 && !geminiQuotaExceeded) {
-      for (let i = 0; i < toAudit.length; i++) {
-        if (i > 0) await sleep(800);
-        try {
-          const audited = await auditAndEnrichLead(ai, toAudit[i]);
-          auditedLeads.push(audited);
-        } catch (err) {
-          if (isGeminiQuotaError(err)) {
-            geminiQuotaExceeded = true;
-            geminiErrorMsg = formatGeminiError(err);
-            break;
-          }
-          geminiErrorMsg = formatGeminiError(err);
-          auditedLeads.push(toAudit[i]);
+      if (basePool.length > 0) {
+        const pre = await preInspectCandidates(basePool, config.qualityFilter);
+        skippedModernCount += pre.skippedModernCount;
+        if (pre.selected.length > 0) {
+          candidatePairs = pre.selected;
+          break;
         }
       }
-    } else if (!ai) {
-      auditedLeads.push(...toAudit);
     }
 
-    // Keep only businesses matching the user's outdated/weak site & design filter
+    const toAudit = candidatePairs.slice(0, 3);
+    scannedCount = toAudit.length + skippedModernCount;
+
+    const auditedLeads: BusinessLead[] = [];
+    let geminiTransientFailed = false;
+    if (ai && toAudit.length > 0 && !geminiQuotaExceeded) {
+      for (let i = 0; i < toAudit.length; i++) {
+        if (i > 0) await sleep(1200);
+        try {
+          const audited = await auditAndEnrichLead(ai, toAudit[i].lead, {
+            preferLite: true,
+            precomputedInspection: toAudit[i].inspection,
+          });
+          auditedLeads.push(audited);
+        } catch (err) {
+          geminiErrorMsg = formatGeminiError(err);
+          if (isGeminiQuotaError(err)) {
+            geminiQuotaExceeded = true;
+            auditedLeads.push(...toAudit.slice(i).map((p) => p.lead));
+            break;
+          }
+          if (isGeminiTransientError(err)) {
+            geminiTransientFailed = true;
+            auditedLeads.push(...toAudit.slice(i).map((p) => p.lead));
+            break;
+          }
+          auditedLeads.push(toAudit[i].lead);
+        }
+      }
+    } else {
+      auditedLeads.push(...toAudit.map((p) => p.lead));
+    }
+
+    // Never keep non-favorite good/modern sites in the feed; if Gemini succeeded, exclude modern_ok.
+    // If Gemini was temporarily overloaded/quota-limited, keep pre-filtered weak Maps candidates without faking AI audit.
     const qualifiedLeads = auditedLeads.filter((lead) =>
-      passesQualityFilter(lead, config.qualityFilter)
+      lead.audit
+        ? passesQualityFilter(lead, config.qualityFilter)
+        : (geminiQuotaExceeded || geminiTransientFailed || !ai) &&
+          !isClearlyModernSite(lead.techSignals)
     );
 
     if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
@@ -1919,7 +2058,10 @@ async function runAutopilotCycle(
       }
     }
 
-    const updatedLeads = mergeAndTrimLeads(qualifiedLeads, existing, 250);
+    const cleanedExisting = existing.filter(
+      (lead) => Boolean(lead.isFavorite) || lead.audit?.verdict !== 'modern_ok'
+    );
+    const updatedLeads = mergeAndTrimLeads(qualifiedLeads, cleanedExisting, 250);
     await writeLeads(updatedLeads);
 
     const nowMs = Date.now();
@@ -1931,7 +2073,9 @@ async function runAutopilotCycle(
       ? 'Достигнута квота Google Maps API. Автопилот приостановлен.'
       : geminiQuotaExceeded
         ? `${geminiErrorMsg} Автопилот поставлен на паузу.`
-        : geminiErrorMsg || placesError;
+        : geminiTransientFailed && qualifiedLeads.length > 0
+          ? `Найдено ${qualifiedLeads.length} компаний с признаками слабого сайта, но ИИ-аудит Gemini сейчас перегружен (503) — карточки добавлены в ленту, проверьте их чуть позже.`
+          : geminiErrorMsg || placesError;
 
     config = {
       ...config,
@@ -2010,6 +2154,13 @@ async function startServer(): Promise<void> {
   const bootAutopilot = await readAutopilot();
   if (bootAutopilot.isRunning) {
     await writeAutopilot({ ...bootAutopilot, isRunning: false });
+  }
+  const bootLeads = await readLeads();
+  const prunedBootLeads = bootLeads.filter(
+    (lead) => Boolean(lead.isFavorite) || lead.audit?.verdict !== 'modern_ok'
+  );
+  if (prunedBootLeads.length !== bootLeads.length) {
+    await writeLeads(prunedBootLeads);
   }
 
   const app = express();
@@ -2267,38 +2418,48 @@ async function startServer(): Promise<void> {
         }
       }
 
-      const toScan =
+      const baseCandidates =
         qualityFilter === 'weak_only'
-          ? freshCandidates.filter((l) => isSafeHttpUrl(l.websiteUrl)).slice(0, 3)
-          : freshCandidates.slice(0, 3);
+          ? freshCandidates.filter((l) => isSafeHttpUrl(l.websiteUrl))
+          : freshCandidates;
+
+      const pre = await preInspectCandidates(baseCandidates, qualityFilter);
+      const toScan = pre.selected.slice(0, 3);
 
       const scannedLeads: BusinessLead[] = [];
+      let geminiTransientHit = false;
       if (ai && toScan.length > 0 && !geminiQuotaHit) {
         for (let i = 0; i < toScan.length; i++) {
-          if (i > 0) await sleep(800);
+          if (i > 0) await sleep(1100);
           try {
-            const audited = await auditAndEnrichLead(ai, toScan[i]);
+            const audited = await auditAndEnrichLead(ai, toScan[i].lead, {
+              precomputedInspection: toScan[i].inspection,
+            });
             scannedLeads.push(audited);
           } catch (err) {
             const msg = formatGeminiError(err);
             if (!warnings.includes(msg)) warnings.push(msg);
-            if (isGeminiQuotaError(err)) {
-              geminiQuotaHit = true;
-              // Keep remaining un-audited leads from Maps so user can still open them and scan individually
-              scannedLeads.push(...toScan.slice(i));
+            if (isGeminiQuotaError(err) || isGeminiTransientError(err)) {
+              if (isGeminiQuotaError(err)) geminiQuotaHit = true;
+              else geminiTransientHit = true;
+              // Keep remaining un-audited non-modern leads from Maps so user can still open them and scan individually
+              scannedLeads.push(...toScan.slice(i).map((p) => p.lead));
               break;
             }
-            scannedLeads.push(toScan[i]);
+            scannedLeads.push(toScan[i].lead);
           }
         }
       } else {
-        scannedLeads.push(...toScan);
+        scannedLeads.push(...toScan.map((p) => p.lead));
       }
 
-      // If Gemini quota paused auditing before evaluating, keep unscanned Maps leads so user can inspect them later
-      const qualified = geminiQuotaHit
-        ? scannedLeads
-        : scannedLeads.filter((lead) => passesQualityFilter(lead, qualityFilter));
+      const geminiUnavailable = geminiQuotaHit || geminiTransientHit || !ai;
+      // Keep weak/outdated leads; if Gemini was unavailable, keep pre-filtered non-modern Maps leads instead of returning 0 results
+      const qualified = scannedLeads.filter((lead) =>
+        lead.audit
+          ? passesQualityFilter(lead, qualityFilter)
+          : geminiUnavailable && !isClearlyModernSite(lead.techSignals)
+      );
 
       if (autoSendTelegram && process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
         const baseUrl = getBaseAppUrl(req);
@@ -2310,18 +2471,31 @@ async function startServer(): Promise<void> {
         }
       }
 
-      const updatedLeads = mergeAndTrimLeads(qualified, existing, 250);
+      const cleanedExisting = existing.filter(
+        (lead) => Boolean(lead.isFavorite) || lead.audit?.verdict !== 'modern_ok'
+      );
+      const updatedLeads = mergeAndTrimLeads(qualified, cleanedExisting, 250);
       await writeLeads(updatedLeads);
       broadcastEvent('leads', { leads: updatedLeads, addedCount: qualified.length });
 
-      if (toScan.length > 0 && qualified.length === 0 && qualityFilter !== 'all' && !geminiQuotaHit) {
+      if (
+        (toScan.length > 0 || pre.skippedModernCount > 0) &&
+        qualified.length === 0 &&
+        qualityFilter !== 'all' &&
+        !geminiQuotaHit &&
+        !geminiTransientHit
+      ) {
         warnings.push(
-          `Проверено ${toScan.length} компаний, но у всех найдены современные сайты. Попробуйте другой город/нишу или переключите фильтр на «Все найденные».`
+          `Проверено ${toScan.length + pre.skippedModernCount} компаний, но у всех найдены хорошие современные сайты — в ленту они не добавлялись. Попробуйте другой город или нишу.`
+        );
+      } else if (geminiUnavailable && qualified.length > 0) {
+        warnings.push(
+          `Найдено ${qualified.length} компаний из Google Карт (современные сайты отсеяны по техсигналам), но ИИ-аудит Gemini сейчас временно перегружен — откройте карточку чуть позже для генерации оффера.`
         );
       }
 
       res.json({
-        scannedCount: toScan.length,
+        scannedCount: toScan.length + pre.skippedModernCount,
         addedCount: qualified.length,
         newLeads: qualified,
         leads: updatedLeads,
@@ -2356,11 +2530,16 @@ async function startServer(): Promise<void> {
       }
 
       const audited = await auditAndEnrichLead(ai, leads[index]);
-      leads[index] = audited;
-      await writeLeads(leads);
-      broadcastEvent('leads', { leads });
+      const removedFromFeed =
+        audited.audit?.verdict === 'modern_ok' && !Boolean(audited.isFavorite);
+      const nextLeads = removedFromFeed
+        ? leads.filter((item) => item.id !== id)
+        : leads.map((item, i) => (i === index ? audited : item));
 
-      res.json({ lead: audited });
+      await writeLeads(nextLeads);
+      broadcastEvent('leads', { leads: nextLeads });
+
+      res.json({ lead: audited, removedFromFeed });
     } catch (err) {
       res.status(getGeminiErrorStatus(err)).json({
         error: formatGeminiError(err),
@@ -2389,10 +2568,16 @@ async function startServer(): Promise<void> {
       }
 
       const audited = await auditAndEnrichLead(ai, leads[index]);
-      leads[index] = audited;
-      await writeLeads(leads);
+      const removedFromFeed =
+        audited.audit?.verdict === 'modern_ok' && !Boolean(audited.isFavorite);
+      const nextLeads = removedFromFeed
+        ? leads.filter((item) => item.id !== id)
+        : leads.map((item, i) => (i === index ? audited : item));
 
-      res.json({ lead: audited });
+      await writeLeads(nextLeads);
+      broadcastEvent('leads', { leads: nextLeads });
+
+      res.json({ lead: audited, removedFromFeed });
     } catch (err) {
       res.status(getGeminiErrorStatus(err)).json({
         error: formatGeminiError(err),
@@ -2433,10 +2618,23 @@ async function startServer(): Promise<void> {
   app.post('/api/businesses/:id/favorite', async (req, res) => {
     try {
       const { id } = req.params;
-      const body = (req.body || {}) as { isFavorite?: unknown };
+      const body = (req.body || {}) as { isFavorite?: unknown; lead?: BusinessLead };
       const leads = await readLeads();
       const index = leads.findIndex((item) => item.id === id);
+
       if (index === -1) {
+        if (body.lead && body.lead.id === id) {
+          const favLead: BusinessLead = {
+            ...body.lead,
+            isFavorite: true,
+            favoritedAt: new Date().toISOString(),
+          };
+          const next = [favLead, ...leads];
+          await writeLeads(next);
+          broadcastEvent('leads', { leads: next });
+          res.json({ lead: favLead, leads: next });
+          return;
+        }
         res.status(404).json({ error: 'Бизнес не найден.' });
         return;
       }
@@ -2444,15 +2642,20 @@ async function startServer(): Promise<void> {
       const nextFavorite =
         typeof body.isFavorite === 'boolean' ? body.isFavorite : !Boolean(leads[index].isFavorite);
 
-      leads[index] = {
+      const updatedLead: BusinessLead = {
         ...leads[index],
         isFavorite: nextFavorite,
         favoritedAt: nextFavorite ? new Date().toISOString() : undefined,
       };
-      await writeLeads(leads);
-      broadcastEvent('leads', { leads });
+      const shouldDropGoodSite = !nextFavorite && updatedLead.audit?.verdict === 'modern_ok';
+      const nextLeads = shouldDropGoodSite
+        ? leads.filter((item) => item.id !== id)
+        : leads.map((item, i) => (i === index ? updatedLead : item));
 
-      res.json({ lead: leads[index], leads });
+      await writeLeads(nextLeads);
+      broadcastEvent('leads', { leads: nextLeads });
+
+      res.json({ lead: updatedLead, leads: nextLeads });
     } catch {
       res.status(500).json({ error: 'Не удалось обновить избранное.' });
     }

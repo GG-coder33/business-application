@@ -20,7 +20,7 @@ interface BusinessDetailPageProps {
   capabilities: SystemCapabilities;
   mapsAvailable: boolean;
   onBack: () => void;
-  onAudit: (id: string) => Promise<{ ok: boolean; error?: string }>;
+  onAudit: (id: string) => Promise<{ ok: boolean; error?: string; removedFromFeed?: boolean }>;
   onToggleFavorite: (id: string) => Promise<void>;
   onSendTelegram: (id: string) => Promise<{ ok: boolean; error?: string }>;
   onOpenSetup: () => void;
@@ -62,6 +62,8 @@ export function BusinessDetailPage({
   const pageUrl = `${window.location.origin}/business/${lead.id}`;
   const audit = lead.audit;
 
+  const techSignals = audit?.techSignals ?? lead.techSignals;
+
   const copyText = async (key: string, value: string) => {
     try {
       await navigator.clipboard.writeText(value);
@@ -80,7 +82,9 @@ export function BusinessDetailPage({
     if (res.ok) {
       setStatusMessage({
         type: 'ok',
-        text: 'Аудит сайта, дизайна, идей для продажи и контактов обновлён.',
+        text: res.removedFromFeed
+          ? 'У компании уже хороший современный сайт — она скрыта из общей ленты, чтобы не мешать поиску слабых сайтов (при желании добавьте в «Избранное»).'
+          : 'Аудит сайта, дизайна, идей для продажи и контактов обновлён.',
       });
     } else {
       setStatusMessage({
@@ -306,64 +310,65 @@ export function BusinessDetailPage({
               </button>
             </div>
 
-            {audit && (
-              <>
-                {audit.techSignals && (
-                  <div className="border-t border-slate-100 pt-4 space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h3 className="text-xs font-semibold text-slate-900">
-                        Технические и визуальные сигналы сайта
-                      </h3>
-                      <span className="text-xs font-mono text-slate-600 tabular-nums">
-                        Технический индекс: {audit.techSignals.modernIndex}/10
-                      </span>
-                    </div>
-                    {audit.techSignals.botProtected ? (
-                      <p className="text-xs text-slate-600">
-                        Прямой HTML-парсинг ограничен защитой от ботов (Cloudflare / WAF) — оценка проведена через поиск и внешний контекст.
-                      </p>
-                    ) : (
-                      <div className="text-xs text-slate-600 flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className={audit.techSignals.usesHttps ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
-                          {audit.techSignals.usesHttps ? 'HTTPS' : 'HTTP без SSL'}
-                        </span>
+            {techSignals && (
+              <div className="border-t border-slate-100 pt-4 space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-xs font-semibold text-slate-900">
+                    Технические и визуальные сигналы сайта
+                  </h3>
+                  <span className="text-xs font-mono text-slate-600 tabular-nums">
+                    Технический индекс: {techSignals.modernIndex}/10
+                  </span>
+                </div>
+                {techSignals.botProtected ? (
+                  <p className="text-xs text-slate-600">
+                    Прямой HTML-парсинг ограничен защитой от ботов (Cloudflare / WAF) — оценка проведена через поиск и внешний контекст.
+                  </p>
+                ) : (
+                  <div className="text-xs text-slate-600 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className={techSignals.usesHttps ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+                      {techSignals.usesHttps ? 'HTTPS' : 'HTTP без SSL'}
+                    </span>
+                    <span aria-hidden="true">·</span>
+                    <span className={techSignals.hasViewportMeta ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+                      {techSignals.hasViewportMeta ? 'Мобильный адаптив' : 'Нет viewport'}
+                    </span>
+                    {techSignals.stack.length > 0 && (
+                      <>
                         <span aria-hidden="true">·</span>
-                        <span className={audit.techSignals.hasViewportMeta ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
-                          {audit.techSignals.hasViewportMeta ? 'Мобильный адаптив' : 'Нет viewport'}
-                        </span>
-                      {audit.techSignals.stack.length > 0 && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span>Стек: {audit.techSignals.stack.join(', ')}</span>
-                        </>
-                      )}
-                      {audit.techSignals.fonts.length > 0 && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span>Шрифты: {audit.techSignals.fonts.join(', ')}</span>
-                        </>
-                      )}
-                      {audit.techSignals.layoutFeatures.length > 0 && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span>Вёрстка/медиа: {audit.techSignals.layoutFeatures.join(', ')}</span>
-                        </>
-                      )}
-                      {audit.techSignals.widgets.length > 0 && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span>Конверсия: {audit.techSignals.widgets.join(', ')}</span>
-                        </>
-                      )}
-                      </div>
+                        <span>Стек: {techSignals.stack.join(', ')}</span>
+                      </>
                     )}
-                    {audit.techSignals.redFlags.length > 0 && (
-                      <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1.5">
-                        Зафиксированные минусы: {audit.techSignals.redFlags.join(' · ')}
-                      </p>
+                    {techSignals.fonts.length > 0 && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>Шрифты: {techSignals.fonts.join(', ')}</span>
+                      </>
+                    )}
+                    {techSignals.layoutFeatures.length > 0 && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>Вёрстка/медиа: {techSignals.layoutFeatures.join(', ')}</span>
+                      </>
+                    )}
+                    {techSignals.widgets.length > 0 && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>Конверсия: {techSignals.widgets.join(', ')}</span>
+                      </>
                     )}
                   </div>
                 )}
+                {techSignals.redFlags.length > 0 && (
+                  <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1.5">
+                    Зафиксированные минусы: {techSignals.redFlags.join(' · ')}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {audit && (
+              <>
 
                 <div className="border-t border-slate-100 pt-4">
                   <h3 className="text-xs font-semibold text-slate-900 mb-2">
